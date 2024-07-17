@@ -1,16 +1,15 @@
 ﻿using MVC.Models;
 using MVC.Models.UserModels;
-using MVC.Repositories.UserRepositories;
 namespace MVC.Services.UserServices;
 
-public class UserService(IUserRepository repository) : IUserService 
+public class UserService : IUserService 
 {
     public Task<Response<bool>> CreateUserAsync(CreateUserModel model)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Response<bool>> DeleteUserAsync(int userId)
+    public Task<Response<bool>> DeleteUserAsync(string userId)
     {
         throw new NotImplementedException();
     }

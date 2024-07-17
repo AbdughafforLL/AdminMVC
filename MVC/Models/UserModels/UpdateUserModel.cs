@@ -2,7 +2,7 @@
 
 public class UpdateUserModel : BaseUserModel
 {
-    public int UserId { get; set; }
-    public int OrganId { get; set; }
+    public required string UserId { get; set; }
+    public required string OrganId { get; set; }
     public List<int> Roles { get; set; } = new();
 }

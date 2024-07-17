@@ -2,6 +2,6 @@
 
 public class Role
 {
-    public int RoleId { get; set; }
-    public string RoleName { get; set; } = null!;
+    public required string RoleId { get; set; }
+    public required string RoleName { get; set; }
 }

@@ -3,23 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MVC</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MVC.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"]</title>
+
+    @await Html.PartialAsync("./Libraries/AdminLibraries/Styles");
 
 </head>
-<body>
+<body class="main-body leftmenu ltr light-theme">
 
-<div class="container-fluid">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
+    <!-- Loader -->
+    <div id="global-loader">
+        <img src="../assets/img/loader.svg" class="loader-img" alt="Loader">
+    </div>
+    <!-- End Loader -->
 
-<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderBody()
+
+@await Html.PartialAsync("./Libraries/AdminLibraries/Scripts");
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

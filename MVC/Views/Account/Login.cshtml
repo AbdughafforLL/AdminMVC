@@ -1,6 +1,7 @@
 ﻿@model MVC.Models.AccountModels.LoginModel
 @{
-    Layout = "_AuthLayout";
+	Layout = "_AuthLayout";
+	ViewData["Title"] = "Login";
 }
 
 @if (ViewBag.Message != null)
@@ -11,35 +12,70 @@
   }
 }
 
-<form asp-action="Login" method="post">
-  <div class="container-fluid">
-    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
-      <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-        <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <h3>Авторизатция</h3>
-          </div>
-          <div class="form-floating mb-3">
-            <input asp-for="UserName" type="text" class="form-control" id="UserName" placeholder="name@example.com">
-            <label for="UserName">Имя пользователя</label>
-            <p><span asp-validation-for="UserName" class="text-danger"></span></p>
-          </div>
-          <div class="form-floating mb-3">
-            <input asp-for="Password" type="password" class="form-control" id="Password">
-            <label for="Password">Пароль</label>
-            <p><span asp-validation-for="Password" class="text-danger"></span></p>
-          </div>
-          <div class="d-flex align-items-center justify-content-between mb-4">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-            <a href="">Забыли пароль</a>
-          </div>
-          <button type="submit" class="btn btn-primary py-3 w-100 mb-4" asp-action="Login">Авторизатция</button>
-          <p class="text-center mb-0">У вас нет учетной записи? <a asp-action="Register" >Регистрация</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
-</form>
+<div class="page main-signin-wrapper">
+	<!-- Row -->
+	<div class="row signpages text-center">
+		<div class="col-md-12">
+			<div class="card border-0">
+				<div class="row row-sm">
+					<div class="col-lg-6 col-xl-6 col-xs-12 col-sm-12 login_form rounded-start-11">
+						<div class="container-fluid">
+							<div class="row row-sm">
+								<div class="card-body mt-2 mb-2">
+									<div class="mobilelogo">
+										<img src="~/assets/img/brand/logo.png" class=" d-lg-none header-brand-img text-start float-start mb-4 dark-logo" alt="logo">
+										<img src="~/assets/img/brand/logo-light.png" class=" d-lg-none header-brand-img text-start float-start mb-4 light-logo" alt="logo">
+									</div>
+									<div class="clearfix"></div>
+									<form asp-action="Login" method="post">
+										<h2 class="text-start mb-2">Войти</h2>
+										<p class="mb-4 text-muted tx-13 ms-0 text-start">Войдите, чтобы создавать, открывать для себя и общаться с мировым сообществом</p>
+										<div class="panel desc-tabs border-0 p-0">
+											<div class="panel-body tabs-menu-body mt-2">
+												<div class="tab-content">
+													<div class="tab-pane active" id="tab01">
+														<div class="form-group text-start">
+															<label class="tx-medium">Имя пользователя</label>
+															<input asp-for = "UserName" class="form-control" placeholder="Введите имя пользователя" type="text" autocomplete="username">
+															<p><span asp-validation-for="UserName" class="text-danger"></span></p>
+														</div>
+														<div class="form-group text-start">
+															<label class="tx-medium">Пароль</label>
+															<input asp-for="Password" class="form-control border-end-0" placeholder="Введите пароль" type="password" autocomplete="new-password" data-bs-toggle="password">
+															<p><span asp-validation-for="Password" class="text-danger"></span></p>
+														</div>
+														<button type="submit" class="btn btn-primary btn-block">Войти</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<div class="signin-or-title">
+										<h5 class="fs-12 mb-1 title tx-normal">or</h5>
+									</div>
+									<div class="pb-1 pt-4">
+										<div class="text-center socialicons">
+											<a href="https://myaccount.google.com/" target="_blank" class="btn ripple btn-danger-transparent rounded-circle" role="button"><i class="mdi mdi-google"></i></a>
+											<a href="https://www.facebook.com/" target="_blank" class="btn ripple btn-primary-transparent rounded-circle" role="button"><i class="mdi mdi-facebook"></i></a>
+											<a href="https://twitter.com/" target="_blank" class="btn ripple btn-info-transparent rounded-circle" role="button"><i class="mdi mdi-twitter"></i></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-xl-6 d-none d-lg-block text-center bg-primary details rounded-end-11">
+						<div class="mt-4 pt-4 p-2 pos-relative">
+							<img src="~/assets/img/brand/logo-light.png" class="header-brand-img mb-3 mt-3" alt="logo">
+							<div class="clearfix"></div>
+							<img src="~/assets/img/pngs/user.png" class="ht-250 mb-0" alt="user">
+							<h2 class="mt-4 text-white tx-normal">Войдите в свой аккаунт</h2>
+							<span class="tx-white-6 tx-13 mb-5 mt-xl-0">Войдите, чтобы создавать, открывать для себя и общаться с мировым сообществом</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End Row -->S
+</div>

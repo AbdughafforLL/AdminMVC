@@ -1,22 +1,11 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using MVC.Repositories.RoleRepository;
-using MVC.Repositories.UserRepositories;
-using MVC.Services.AccountService;
-using MVC.Services.UserServices;
-
+using MVC.Extentions;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+builder.Services.AddMvc();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(opt =>
-{
-    opt.LoginPath = "/Account/Login";
-});
+builder.Services.InjectServices();
+builder.Services.InjectRepositories();
+builder.Services.ConfigCookie();
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())

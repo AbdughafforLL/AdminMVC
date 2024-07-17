@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using MVC.Models.AccountModels;
 using System.Security.Claims;
 using MVC.Services.AccountService;
-
 namespace MVC.Controllers;
 
 public class AccountController(IAccountService service) : Controller
@@ -18,10 +17,12 @@ public class AccountController(IAccountService service) : Controller
 
         var res = await service.Login(model);
         if (res.StatusCode != 200)
+        {
+            ViewBag.Message = res.Errors;
             return View(model);
+        }
 
         var claimsIdentity = new ClaimsIdentity(res.Data, CookieAuthenticationDefaults.AuthenticationScheme);
-
         var authProperties = new AuthenticationProperties()
         {
             AllowRefresh = true,
@@ -33,7 +34,7 @@ public class AccountController(IAccountService service) : Controller
             new ClaimsPrincipal(claimsIdentity),
             authProperties
         );
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Admin");
     }
 
     public async Task<IActionResult> Logout()

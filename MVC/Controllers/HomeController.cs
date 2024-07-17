@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MVC.Models;
 namespace MVC.Controllers;
 
-[Authorize]
-public class HomeController(ILogger<HomeController> logger) : Controller
+public class HomeController : Controller
 {
     public IActionResult Index()=> View();
     public IActionResult Privacy()=> View();

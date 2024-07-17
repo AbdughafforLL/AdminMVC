@@ -29,13 +29,13 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
                 }
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
     }
 
-    public async Task<List<UserRole>> GetRolesByUserId(int userId)
+    public async Task<List<UserRole>> GetRolesByUserId(string userId)
     {
         List<UserRole> roles = null!;
         _ado.SqlQuery = "select * from UserRoles where user_id = @user_id;";
@@ -55,8 +55,8 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
                     {
                         var role = new UserRole()
                         {
-                            RoleId = (int)_ado.DataReader["role_id"],
-                            UserId = (int)_ado.DataReader["user_id"]
+                            RoleId = (string)_ado.DataReader["role_id"],
+                            UserId = (string)_ado.DataReader["user_id"]
                         };
                         roles.Add(role);
                     }
@@ -92,13 +92,13 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
                 }
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
     }
 
-    public async Task<Role> GetRoleById(int roleId)
+    public async Task<Role> GetRoleById(string roleId)
     {
         Role role = null!;
         _ado.SqlQuery = "select * from Roles where role_id = @roleId;";
@@ -118,7 +118,7 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
                     {
                         role = new Role()
                         {
-                            RoleId = (int)_ado.DataReader["role_id"],
+                            RoleId = (string)_ado.DataReader["role_id"],
                             RoleName = (string)_ado.DataReader["role_name"],
                         };
                     }
@@ -152,7 +152,7 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
                     {
                         var role = new Role()
                         {
-                            RoleId = (int)_ado.DataReader["role_id"],
+                            RoleId = (string)_ado.DataReader["role_id"],
                             RoleName = (string)_ado.DataReader["role_name"],
                         };
                         roles.Add(role);
@@ -162,7 +162,7 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
                 return roles;
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return roles;
         }
@@ -189,9 +189,19 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
                 }
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
+    }
+
+    public Task<bool> AddRoleToUser()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteRoleInUser()
+    {
+        throw new NotImplementedException();
     }
 }

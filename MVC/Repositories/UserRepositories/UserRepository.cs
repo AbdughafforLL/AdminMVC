@@ -11,7 +11,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
     
     public async Task<bool> CreateUser(User model)
     {
-        _ado.SqlQuery = "insert into Users(user_name,hash_password,email,phone_number,organ_id) " +
+        _ado.SqlQuery = "insert into Users(user_id,user_name,hash_password,email,phone_number,organ_id) " +
                      "Values (@user_name,@hash_password,@email,@phone_number,@organ_id);";
         _ado.ConString = configuration.GetConnectionString("DefaultConnection")!;
         try
@@ -20,22 +20,22 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             {
                 using (_ado.Connection = new SqlConnection(_ado.ConString))
                 {
-                    _ado.Connection.Open();
                     _ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
                     _ado.Command.CommandType = CommandType.Text;
+                    _ado.Command.Parameters.AddWithValue("@user_id", model.UserId);
                     _ado.Command.Parameters.AddWithValue("@user_name", model.UserName);
                     _ado.Command.Parameters.AddWithValue("@hash_password", model.HashPassword);
                     _ado.Command.Parameters.AddWithValue("@email", model.Email ?? string.Empty);
                     _ado.Command.Parameters.AddWithValue("@phone_number", model.PhoneNumber ?? string.Empty);
-                    _ado.Command.Parameters.AddWithValue("@organ_id", model.OrganId ?? 0);
-
+                    _ado.Command.Parameters.AddWithValue("@organ_id", model.OrganId);
+                    _ado.Connection.Open();
                     int i = _ado.Command.ExecuteNonQuery();
                     _ado.Connection.Close();
                     return Convert.ToBoolean(i);
                 }
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
@@ -52,28 +52,27 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             {
                 using (_ado.Connection = new SqlConnection(_ado.ConString))
                 {
-                    _ado.Connection.Open();
                     _ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
                     _ado.Command.CommandType = CommandType.Text;
-                    _ado.Command.Parameters.AddWithValue("@user_name", model.UserName);
                     _ado.Command.Parameters.AddWithValue("@user_id", model.UserId);
+                    _ado.Command.Parameters.AddWithValue("@user_name", model.UserName);
                     _ado.Command.Parameters.AddWithValue("@email", model.Email ?? string.Empty);
                     _ado.Command.Parameters.AddWithValue("@phone_number", model.PhoneNumber ?? string.Empty);
                     _ado.Command.Parameters.AddWithValue("@organ_id", model.OrganId);
-
+                    _ado.Connection.Open();
                     int i = _ado.Command.ExecuteNonQuery();
                     _ado.Connection.Close();
                     return Convert.ToBoolean(i);
                 }
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
     }
 
-    public async Task<bool> DeleteUser(int userId)
+    public async Task<bool> DeleteUser(string userId)
     {
         _ado.SqlQuery = "delete from Users where user_id = @user_id;";
         _ado.ConString = configuration.GetConnectionString("DefaultConnection")!;
@@ -83,24 +82,23 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             {
                 using (_ado.Connection = new SqlConnection(_ado.ConString))
                 {
-                    _ado.Connection.Open();
                     _ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
                     _ado.Command.CommandType = CommandType.Text;
                     _ado.Command.Parameters.AddWithValue("@user_id", userId);
-
+                    _ado.Connection.Open();
                     int i = _ado.Command.ExecuteNonQuery();
                     _ado.Connection.Close();
                     return Convert.ToBoolean(i);
                 }
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
     }
 
-    public async Task<User> GetUserById(int userId)
+    public async Task<User> GetUserById(string userId)
     {
         User user = null!;
         _ado.SqlQuery = "select * from Users where user_id = @user_id;";
@@ -110,22 +108,21 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             return await Task.Run(() => {
                 using (_ado.Connection = new SqlConnection(_ado.ConString))
                 {
-                    _ado.Connection.Open();
                     _ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
                     _ado.Command.CommandType = CommandType.Text;
                     _ado.Command.Parameters.AddWithValue("@user_id", userId);
-
+                    _ado.Connection.Open();
                     _ado.DataReader = _ado.Command.ExecuteReader();
                     while (_ado.DataReader.Read())
                     {
                         user = new User()
                         {
-                            UserId = (int)_ado.DataReader["user_id"],
+                            UserId = (string)_ado.DataReader["user_id"],
                             UserName = (string)_ado.DataReader["user_name"],
                             HashPassword = (string)_ado.DataReader["hash_password"],
                             Email = (string)_ado.DataReader["email"] ?? string.Empty,
                             PhoneNumber = (string)_ado.DataReader["phone_number"] ?? string.Empty,
-                            OrganId = (int)_ado.DataReader["organ_id"]
+                            OrganId = (string)_ado.DataReader["organ_id"]
                         };
                     }
                     _ado.Connection.Close();
@@ -148,22 +145,21 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             return await Task.Run(() => {
                 using (_ado.Connection = new SqlConnection(_ado.ConString))
                 {
-                    _ado.Connection.Open();
                     _ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
                     _ado.Command.CommandType = CommandType.Text;
                     _ado.Command.Parameters.AddWithValue("@user_name", userName);
-
+                    _ado.Connection.Open();
                     _ado.DataReader = _ado.Command.ExecuteReader();
                     while (_ado.DataReader.Read())
                     {
                         user = new User()
                         {
-                            UserId = (int)_ado.DataReader["user_id"],
+                            UserId = (string)_ado.DataReader["user_id"],
                             UserName = (string)_ado.DataReader["user_name"],
                             HashPassword = (string)_ado.DataReader["hash_password"],
                             Email = (string)_ado.DataReader["email"] ?? string.Empty,
                             PhoneNumber = (string)_ado.DataReader["phone_number"] ?? string.Empty,
-                            OrganId = (int)_ado.DataReader["organ_id"]
+                            OrganId = (string)_ado.DataReader["organ_id"]
                         };
                     }
                     _ado.Connection.Close();
@@ -187,21 +183,20 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             return await Task.Run(() => {
                 using (_ado.Connection = new SqlConnection(_ado.ConString))
                 {
-                    _ado.Connection.Open();
                     _ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
                     _ado.Command.CommandType = CommandType.Text;
-
+                    _ado.Connection.Open();
                     _ado.DataReader = _ado.Command.ExecuteReader();
                     while (_ado.DataReader.Read())
                     {
                         User user = new ()
                         {
-                            UserId = (int)_ado.DataReader["user_id"],
+                            UserId = (string)_ado.DataReader["user_id"],
                             UserName = (string)_ado.DataReader["user_name"],
                             HashPassword = (string)_ado.DataReader["hash_password"],
                             Email = (string)_ado.DataReader["email"] ?? string.Empty,
                             PhoneNumber = (string)_ado.DataReader["phone_number"] ?? string.Empty,
-                            OrganId = (int)_ado.DataReader["organ_id"]
+                            OrganId = (string)_ado.DataReader["organ_id"]
                         };
                         users.Add(user);
                     }

@@ -2,6 +2,6 @@
 
 public class Organ
 {
-    public int OrganId { get; set; }
-    public string OrganName { get; set; } = null!;
+    public required string OrganId { get; set; }
+    public required string OrganName { get; set; }
 }

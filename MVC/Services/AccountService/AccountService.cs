@@ -3,7 +3,6 @@ using System.Security.Claims;
 using MVC.Models;
 using MVC.Models.AccountModels;
 using MVC.Repositories.UserRepositories;
-
 namespace MVC.Services.AccountService;
 
 public class AccountService(IUserRepository userRepository) : IAccountService

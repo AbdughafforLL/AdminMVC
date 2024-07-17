@@ -1,6 +1,6 @@
 ﻿namespace MVC.Entities;
 public class UserRole
 {
-    public int UserId { get; set; }
-    public int RoleId { get; set; }
+    public required string UserId { get; set; }
+    public required string RoleId { get; set; }
 }
