@@ -1,3 +1,4 @@
+using MVC.AutoMapper;
 using MVC.Extentions;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
@@ -6,6 +7,7 @@ builder.Services.AddMvc();
 builder.Services.InjectServices();
 builder.Services.InjectRepositories();
 builder.Services.ConfigCookie();
+builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())

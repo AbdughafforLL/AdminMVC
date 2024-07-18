@@ -4,7 +4,7 @@ namespace MVC.Models;
 public class Response<T>
 {
     public int StatusCode { get; set; }
-    public List<string>? Errors { get; set; }
+    public string? Message { get; set; }
     public T? Data { get; set; }
 
     public Response(T data)
@@ -13,15 +13,9 @@ public class Response<T>
         Data = data;
     }
 
-    public Response(HttpStatusCode code,List<string> errors)
-    {
-        Errors = errors;
-        StatusCode = (int)code;
-    }
-
     public Response(HttpStatusCode code, string message)
     {
-        Errors = new List<string>() { message };
+        Message = message;
         StatusCode = (int)code;
     }
 }

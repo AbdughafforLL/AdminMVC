@@ -9,6 +9,5 @@ public static class CookieExtentions
         {
             opt.LoginPath = "/Account/Login";
         });
-
     }
 }

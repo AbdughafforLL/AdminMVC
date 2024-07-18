@@ -1,4 +1,5 @@
-﻿using MVC.Repositories.RoleRepository;
+﻿using MVC.Repositories.OrganRepositories;
+using MVC.Repositories.RoleRepository;
 using MVC.Repositories.UserRepositories;
 using MVC.Services.AccountService;
 using MVC.Services.UserServices;
@@ -15,5 +16,6 @@ public static class InjectExtentions
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IOrganRepository, OrganRepository>();
     }
 }

@@ -1,0 +1,83 @@
+﻿@using MVC.Entities
+@using MVC.Models.UserModels
+@model CreateUserDto
+@{
+	Layout = "_AdminLayout";
+	ViewData["Title"] = "Create User";
+}
+
+<div class="main-content side-content pt-0" data-select2-id="12">
+	<div class="main-container container-fluid">
+		<div class="inner-body">
+			<!-- Page Header -->
+			<div class="page-header">
+				<div>
+					<h2 class="main-content-title tx-24 mg-b-5">Add User</h2>
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Add User</li>
+					</ol>
+				</div>
+				<div class="d-flex">
+					<div class="justify-content-center">
+						<button type="button" class="btn btn-white btn-icon-text my-2 me-2">
+							<i class="fe fe-settings"></i>
+							<span>Settings</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<!-- End Page Header -->
+			<!-- Row -->
+			<div class="row row-sm">
+				<div class="col-lg-12 col-md-12 col-md-12">
+					<div class="card custom-card">
+						<form asp-action="CreateUser" method="post" class="card-body">
+							<div class="form-group">
+								<label for="userName" class="tx-medium">User name</label>
+								<input asp-for="UserName" type="text" id="userName" class="form-control" placeholder="User name">
+								<span asp-validation-for="UserName" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label class="tx-medium">Category</label>
+								<select asp-for="OrganId" class="form-control select2-no-search">
+									<option label="Вибирайте организация" selected disabled></option>
+									@foreach (Organ organ in (List<Organ>)ViewData["Organs"])
+									{
+										<option value="@organ.OrganId">@organ.OrganName</option>
+									}
+								</select>
+								<span asp-validation-for="OrganId" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="email" class="tx-medium">Email</label>
+								<input asp-for="Email" type="email" id="email" class="form-control" placeholder="ali@gmail.com">
+								<span asp-validation-for="Email" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="phoneNumber" class="tx-medium">PhoneNumber</label>
+								<input asp-for="PhoneNumber" type="text" id="phoneNumber" class="form-control" placeholder="999 99 99 99">
+								<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="password" class="tx-medium">Password</label>
+								<input asp-for="Password" type="password" id="password" class="form-control" placeholder="**********">
+								<span asp-validation-for="Password" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="confPassword" class="tx-medium">Confirm Password</label>
+								<input asp-for="ComfirmPassword" type="password" id="confPassword" class="form-control" placeholder="**********">
+								<span asp-validation-for="ComfirmPassword" class="text-danger"></span>
+							</div>
+							<div class="card-footer mb-1">
+								<button type="submit" class="btn btn-primary">Add User</button>
+								<a asp-action="Index" class="btn btn-danger">Cancel</a>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- End Row -->
+		</div>
+	</div>
+</div>

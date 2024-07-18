@@ -2,7 +2,6 @@
 using System.Data.SqlClient;
 using MVC.Entities;
 using MVC.Models;
-
 namespace MVC.Repositories.UserRepositories;
 
 public class UserRepository(IConfiguration configuration) : IUserRepository
@@ -12,7 +11,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
     public async Task<bool> CreateUser(User model)
     {
         _ado.SqlQuery = "insert into Users(user_id,user_name,hash_password,email,phone_number,organ_id) " +
-                     "Values (@user_name,@hash_password,@email,@phone_number,@organ_id);";
+                     "Values (@user_id,@user_name,@hash_password,@email,@phone_number,@organ_id);";
         _ado.ConString = configuration.GetConnectionString("DefaultConnection")!;
         try
         {
@@ -40,11 +39,10 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             return false;
         }
     }
-
     public async Task<bool> UpdateUser(User model)
     {
         _ado.SqlQuery = "update Users set user_name = @user_name,email = @email,phone_number=@phone_number," +
-                        "organ_id = @organ_id; where user_id = @user_id;";
+                        "organ_id = @organ_id where user_id = @user_id;";
         _ado.ConString = configuration.GetConnectionString("DefaultConnection")!;
         try
         {
@@ -71,7 +69,6 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             return false;
         }
     }
-
     public async Task<bool> DeleteUser(string userId)
     {
         _ado.SqlQuery = "delete from Users where user_id = @user_id;";
@@ -97,7 +94,6 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             return false;
         }
     }
-
     public async Task<User> GetUserById(string userId)
     {
         User user = null!;
@@ -157,8 +153,8 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
                             UserId = (string)_ado.DataReader["user_id"],
                             UserName = (string)_ado.DataReader["user_name"],
                             HashPassword = (string)_ado.DataReader["hash_password"],
-                            Email = (string)_ado.DataReader["email"] ?? string.Empty,
-                            PhoneNumber = (string)_ado.DataReader["phone_number"] ?? string.Empty,
+                            Email = (string)_ado.DataReader["email"],
+                            PhoneNumber = (string)_ado.DataReader["phone_number"],
                             OrganId = (string)_ado.DataReader["organ_id"]
                         };
                     }
@@ -172,10 +168,9 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             return user;
         }
     }
-
     public async Task<List<User>> GetUsers()
     {
-        List<User> users = null!;
+        List<User> users = new();
         _ado.SqlQuery = "select * from Users;";
         _ado.ConString = configuration.GetConnectionString("DefaultConnection")!;
         try

@@ -18,7 +18,7 @@ public class AccountController(IAccountService service) : Controller
         var res = await service.Login(model);
         if (res.StatusCode != 200)
         {
-            ViewBag.Message = res.Errors;
+            ViewBag.Message = res.Message;
             return View(model);
         }
 

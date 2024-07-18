@@ -6,10 +6,12 @@
 
 @if (ViewBag.Message != null)
 {
-  @foreach (var message in @ViewBag.Message)
-  {
-    <p class="text text-danger">@message</p>
-  }
+	<div class="alert alert-danger alert-bdleft-danger w-25 mx-auto">
+		<button type="button" class="btn-close float-end fs-10" data-bs-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">×</span>
+		</button>
+		<strong>@ViewBag.Message</strong>
+	</div>
 }
 
 <div class="page main-signin-wrapper">
