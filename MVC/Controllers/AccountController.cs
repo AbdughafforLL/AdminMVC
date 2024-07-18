@@ -6,7 +6,7 @@ using System.Security.Claims;
 using MVC.Services.AccountService;
 namespace MVC.Controllers;
 
-public class AccountController(IAccountService service) : Controller
+public class AccountController(IAccountService service,ILogger<AccountController> logger) : Controller
 {
     public IActionResult Login() => View();
     [HttpPost]
@@ -34,6 +34,7 @@ public class AccountController(IAccountService service) : Controller
             new ClaimsPrincipal(claimsIdentity),
             authProperties
         );
+        logger.LogInformation($"Loggin user : {res.Data}");
         return RedirectToAction("Index", "Admin");
     }
 
