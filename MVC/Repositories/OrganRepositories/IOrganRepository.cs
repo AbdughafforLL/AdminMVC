@@ -2,9 +2,9 @@
 namespace MVC.Repositories.OrganRepositories;
 public interface IOrganRepository
 {
-    Task<bool> CreateOrgan(Organ model);
-    Task<bool> UpdateOrgan(Organ model);
-    Task<bool> DeleteOrgan(string organ_id);
-    Task<Organ> GetOrganById(string organ_id);
-    Task<List<Organ>> GetOrgans();
+	Task<(bool, string)> CreateOrgan(Organ model);
+	Task<(bool, string)> UpdateOrgan(Organ model);
+	Task<(bool, string)> DeleteOrgan(int organId);
+	Task<Organ> GetOrganById(int organId);
+	Task<List<Organ>> GetOrgans();
 }

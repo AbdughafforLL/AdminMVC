@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
 
-    @await Html.PartialAsync("./Libraries/AdminLibraries/Styles");
+    @await Html.PartialAsync("./Libraries/AdminLibraries/Styles")
 
 </head>
 <body class="main-body leftmenu ltr light-theme">
@@ -17,7 +17,7 @@
 
     @RenderBody()
 
-@await Html.PartialAsync("./Libraries/AdminLibraries/Scripts");
+@await Html.PartialAsync("./Libraries/AdminLibraries/Scripts")
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

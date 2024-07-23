@@ -1,14 +1,13 @@
-﻿using MVC.Entities;
-using MVC.Models;
+﻿using MVC.Models;
 using MVC.Models.UserModels;
-
 namespace MVC.Services.UserServices;
 
 public interface IUserService
 {
-    Task<Response<bool>> CreateUserAsync(CreateUserDto model);
-    Task<Response<bool>> DeleteUserAsync(string userId);
-    Task<Response<bool>> UpdateUserAsync(UpdateUserDto model);
-    Task<Response<User>> GetUserByIdAsync(string userId);
-    Task<Response<List<GetUsersDto>>> GetUsersAsync();
+	Task<Response<bool>> CreateUserAsync(CreateUserDto model);
+	Task<Response<bool>> DeleteUserAsync(int userId);
+	Task<Response<bool>> UpdateUserAsync(UpdateUserDto model);
+	Task<Response<GetUserByIdDto>> GetUserByIdAsync(int userId);
+	Task<Response<GetUserByUserName>> GetUserByUserNameAsync(string userName);
+	Task<Response<List<GetUsersDto>>> GetUsersAsync();
 }

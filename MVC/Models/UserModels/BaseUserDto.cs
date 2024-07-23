@@ -1,16 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MVC.Models.UserModels;
+﻿namespace MVC.Models.UserModels;
 
 public abstract class BaseUserDto
 {
-    [MaxLength(100),
-     Required(ErrorMessage = "User name require")]
-    public required string UserName { get; set; }
-    [MaxLength(100),
-    DataType(DataType.EmailAddress)]
-    public string? Email { get; set; }
-    [MaxLength(100),
-     DataType(DataType.PhoneNumber)]
-    public string? PhoneNumber { get; set; }
+	public string UserName { get; set; } = null!;
+	public string Ips { get; set; } = null!;
+	public string Inn { get; set; } = null!;
+	public string FirstName { get; set; } = null!;
+	public string LastName { get; set; } = null!;
+	public string MiddleName { get; set; } = null!;
+	public string PhoneNumber { get; set; } = null!;
+	public string AdrText { get; set; } = null!;
+	public string AdrEmail { get; set; } = null!;
+	public string AdrWebSite { get; set; } = null!;
 }

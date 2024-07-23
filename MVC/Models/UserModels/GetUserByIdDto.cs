@@ -1,5 +1,5 @@
 ﻿namespace MVC.Models.UserModels;
-public class GetUsersDto : BaseUserDto
+public class GetUserByIdDto : BaseUserDto
 {
 	public int UserId { get; set; }
 	public string FullName { get; set; } = null!;
@@ -8,4 +8,6 @@ public class GetUsersDto : BaseUserDto
 	public string OrganName { get; set; } = null!;
 	public string CreatedAt { get; set; } = null!;
 	public string? UpdatedAt { get; set; }
+	public List<int> Roles { get; set; } = new();
+	public List<int> Areas { get; set; } = new();
 }

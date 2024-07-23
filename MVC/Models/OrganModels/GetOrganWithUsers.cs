@@ -2,6 +2,6 @@
 namespace MVC.Models.OrganModels;
 public class GetOrganWithUsers : BaseOrganDto
 {
-    public required string OrganId { get; set; }
-    public List<User> Users { get; set; } = new();
+	public required int OrganId { get; set; }
+	public List<User> Users { get; set; } = new();
 }

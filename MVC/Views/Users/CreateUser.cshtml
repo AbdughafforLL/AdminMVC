@@ -12,10 +12,11 @@
 			<!-- Page Header -->
 			<div class="page-header">
 				<div>
-					<h2 class="main-content-title tx-24 mg-b-5">Add User</h2>
+					<h2 class="main-content-title tx-24 mg-b-5">Добавить пользователя</h2>
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
-						<li class="breadcrumb-item active" aria-current="page">Add User</li>
+						<li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin">Dashboard</a></li>
+						<li class="breadcrumb-item"><a asp-action="Index" asp-controller="Users">Users</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Add user</li>
 					</ol>
 				</div>
 				<div class="d-flex">
@@ -39,26 +40,87 @@
 								<span asp-validation-for="UserName" class="text-danger"></span>
 							</div>
 							<div class="form-group">
-								<label class="tx-medium">Category</label>
+								<label for="Ips" class="tx-medium">Ips</label>
+								<input asp-for="Ips" type="text" id="Ips" class="form-control" placeholder="User name">
+								<span asp-validation-for="Ips" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="inn" class="tx-medium">Inn</label>
+								<input asp-for="Inn" type="text" id="inn" class="form-control" placeholder="User name">
+								<span asp-validation-for="Inn" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="firstName" class="tx-medium">First Name</label>
+								<input asp-for="FirstName" type="text" id="firstName" class="form-control" placeholder="User name">
+								<span asp-validation-for="FirstName" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="lastName" class="tx-medium">Last Name</label>
+								<input asp-for="LastName" type="text" id="lastName" class="form-control" placeholder="User name">
+								<span asp-validation-for="LastName" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="middleName" class="tx-medium">Middle Name</label>
+								<input asp-for="MiddleName" type="text" id="middleName" class="form-control" placeholder="User name">
+								<span asp-validation-for="MiddleName" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="adrText" class="tx-medium">Adress Text</label>
+								<input asp-for="AdrText" type="text" id="adrText" class="form-control" placeholder="User name">
+								<span asp-validation-for="AdrText" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="adrEmail" class="tx-medium">Adress Email</label>
+								<input asp-for="AdrEmail" type="email" id="adrEmail" class="form-control" placeholder="User name">
+								<span asp-validation-for="AdrText" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="adrWebSite" class="tx-medium">Adress WebSite</label>
+								<input asp-for="AdrWebSite" type="text" id="adrWebSite" class="form-control" placeholder="User name">
+								<span asp-validation-for="AdrWebSite" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="phoneNumber" class="tx-medium">Phone number</label>
+								<input asp-for="PhoneNumber" type="text" id="AdrWebSite" class="form-control" placeholder="User name">
+								<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+							</div>
+
+							<div class="form-group">
+								<label class="tx-medium">Organs</label>
 								<select asp-for="OrganId" class="form-control select2-no-search">
 									<option label="Вибирайте организация" selected disabled></option>
-									@foreach (Organ organ in (List<Organ>)ViewData["Organs"])
+									@foreach (Organ organ in (List<Organ>)ViewData["Organs"]!)
 									{
 										<option value="@organ.OrganId">@organ.OrganName</option>
 									}
 								</select>
 								<span asp-validation-for="OrganId" class="text-danger"></span>
 							</div>
+
 							<div class="form-group">
-								<label for="email" class="tx-medium">Email</label>
-								<input asp-for="Email" type="email" id="email" class="form-control" placeholder="ali@gmail.com">
-								<span asp-validation-for="Email" class="text-danger"></span>
+								<label class="tx-medium">Status</label>
+								<select asp-for="StatusId" class="form-control select2-no-search">
+									<option label="Вибирайте организация" selected disabled></option>
+									@foreach (Organ organ in (List<Organ>)ViewData["Status"]!)
+									{
+										<option value="@organ.OrganId">@organ.OrganName</option>
+									}
+								</select>
+								<span asp-validation-for="OrganId" class="text-danger"></span>
 							</div>
+
 							<div class="form-group">
-								<label for="phoneNumber" class="tx-medium">PhoneNumber</label>
-								<input asp-for="PhoneNumber" type="text" id="phoneNumber" class="form-control" placeholder="999 99 99 99">
-								<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+								<label class="tx-medium">Areas</label>
+								<select asp-for="AreaId" class="form-control select2-no-search">
+									<option label="Вибирайте организация" selected disabled></option>
+									@foreach (Organ organ in (List<Organ>)ViewData["Areas"]!)
+									{
+										<option value="@organ.OrganId">@organ.OrganName</option>
+									}
+								</select>
+								<span asp-validation-for="OrganId" class="text-danger"></span>
 							</div>
+
 							<div class="form-group">
 								<label for="password" class="tx-medium">Password</label>
 								<input asp-for="Password" type="password" id="password" class="form-control" placeholder="**********">
@@ -70,8 +132,8 @@
 								<span asp-validation-for="ComfirmPassword" class="text-danger"></span>
 							</div>
 							<div class="card-footer mb-1">
-								<button type="submit" class="btn btn-primary">Add User</button>
-								<a asp-action="Index" class="btn btn-danger">Cancel</a>
+								<button type="submit" class="btn btn-primary">Добавить</button>
+								<a asp-action="Index" class="btn btn-danger">Отмена</a>
 							</div>
 						</form>
 					</div>

@@ -1,12 +1,13 @@
-﻿using MVC.Entities;
+﻿using MVC.Filters;
+using MVC.Models.UserModels;
 namespace MVC.Repositories.UserRepositories;
 
 public interface IUserRepository
 {
-       Task<bool> CreateUser(User model);
-       Task<bool> UpdateUser(User model);
-       Task<bool> DeleteUser(string userId);
-       Task<User> GetUserByUserName(string userName);
-       Task<User> GetUserById(string userId);
-       Task<List<User>> GetUsers();
+	Task<(bool, string)> CreateUser(CreateUserDto model);
+	Task<(bool, string)> UpdateUser(UpdateUserDto model);
+	Task<(bool, string)> DeleteUser(int userId);
+	Task<(string, GetUserByUserName?)> GetUserByUserName(string userName);
+	Task<(string, GetUserByIdDto?)> GetUserById(int userId);
+	Task<(string, List<GetUsersDto>)> GetUsers(UserFilters model);
 }
