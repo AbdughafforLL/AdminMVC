@@ -1,9 +1,22 @@
 ﻿@using MVC.Entities
+@using MVC.Models.AreaModels
+@using MVC.Models.OrganModels
+@using MVC.Models.StatusModels
 @using MVC.Models.UserModels
 @model CreateUserDto
 @{
 	Layout = "_AdminLayout";
 	ViewData["Title"] = "Create User";
+}
+
+@if (ViewBag.Message != null)
+{
+	<div class="alert alert-danger alert-bdleft-danger w-25 mx-auto">
+		<button type="button" class="btn-close float-end fs-10" data-bs-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">×</span>
+		</button>
+		<strong>@ViewBag.Message</strong>
+	</div>
 }
 
 <div class="main-content side-content pt-0" data-select2-id="12">
@@ -36,62 +49,69 @@
 						<form asp-action="CreateUser" method="post" class="card-body">
 							<div class="form-group">
 								<label for="userName" class="tx-medium">User name</label>
-								<input asp-for="UserName" type="text" id="userName" class="form-control" placeholder="User name">
+								<input asp-for="UserName" type="text" id="userName" class="form-control" placeholder="Введите имя ползователья">
 								<span asp-validation-for="UserName" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="Ips" class="tx-medium">Ips</label>
-								<input asp-for="Ips" type="text" id="Ips" class="form-control" placeholder="User name">
+								<input asp-for="Ips" type="text" id="Ips" class="form-control" placeholder="Введите ips">
 								<span asp-validation-for="Ips" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="inn" class="tx-medium">Inn</label>
-								<input asp-for="Inn" type="text" id="inn" class="form-control" placeholder="User name">
+								<input asp-for="Inn" type="text" id="inn" class="form-control" placeholder="Введите инн">
 								<span asp-validation-for="Inn" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="firstName" class="tx-medium">First Name</label>
-								<input asp-for="FirstName" type="text" id="firstName" class="form-control" placeholder="User name">
+								<input asp-for="FirstName" type="text" id="firstName" class="form-control" placeholder="Введите имя">
 								<span asp-validation-for="FirstName" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="lastName" class="tx-medium">Last Name</label>
-								<input asp-for="LastName" type="text" id="lastName" class="form-control" placeholder="User name">
+								<input asp-for="LastName" type="text" id="lastName" class="form-control" placeholder="Введите фамилия">
 								<span asp-validation-for="LastName" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="middleName" class="tx-medium">Middle Name</label>
-								<input asp-for="MiddleName" type="text" id="middleName" class="form-control" placeholder="User name">
+								<input asp-for="MiddleName" type="text" id="middleName" class="form-control" placeholder="Введите отчество">
 								<span asp-validation-for="MiddleName" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="adrText" class="tx-medium">Adress Text</label>
-								<input asp-for="AdrText" type="text" id="adrText" class="form-control" placeholder="User name">
+								<input asp-for="AdrText" type="text" id="adrText" class="form-control" placeholder="Введите адрес">
 								<span asp-validation-for="AdrText" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="adrEmail" class="tx-medium">Adress Email</label>
-								<input asp-for="AdrEmail" type="email" id="adrEmail" class="form-control" placeholder="User name">
-								<span asp-validation-for="AdrText" class="text-danger"></span>
+								<input asp-for="AdrEmail" type="email" id="adrEmail" class="form-control" placeholder="Введите email адрес">
+								<span asp-validation-for="AdrEmail" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="adrWebSite" class="tx-medium">Adress WebSite</label>
-								<input asp-for="AdrWebSite" type="text" id="adrWebSite" class="form-control" placeholder="User name">
+								<input asp-for="AdrWebSite" type="text" id="adrWebSite" class="form-control" placeholder="Введите веб-сайт адрес">
 								<span asp-validation-for="AdrWebSite" class="text-danger"></span>
 							</div>
 							<div class="form-group">
 								<label for="phoneNumber" class="tx-medium">Phone number</label>
-								<input asp-for="PhoneNumber" type="text" id="AdrWebSite" class="form-control" placeholder="User name">
+								<input asp-for="PhoneNumber" type="text" id="AdrWebSite" class="form-control" placeholder="Введите номер телефона">
 								<span asp-validation-for="PhoneNumber" class="text-danger"></span>
 							</div>
 
 							<div class="form-group">
 								<label class="tx-medium">Organs</label>
 								<select asp-for="OrganId" class="form-control select2-no-search">
-									<option label="Вибирайте организация" selected disabled></option>
-									@foreach (Organ organ in (List<Organ>)ViewData["Organs"]!)
+									@if (ViewData["Organs"]!.GetType() == typeof(string))
 									{
-										<option value="@organ.OrganId">@organ.OrganName</option>
+										<option label="@ViewData["Organs"]!.ToString()" selected disabled></option>
+									}
+									else
+									{
+										<option label="Вибирайте организация" selected disabled></option>
+										@foreach (GetOrganDto organ in (List<GetOrganDto>)ViewData["Organs"]!)
+										{
+											<option value="@organ.OrganId">@organ.OrganName</option>
+										}
 									}
 								</select>
 								<span asp-validation-for="OrganId" class="text-danger"></span>
@@ -100,25 +120,39 @@
 							<div class="form-group">
 								<label class="tx-medium">Status</label>
 								<select asp-for="StatusId" class="form-control select2-no-search">
-									<option label="Вибирайте организация" selected disabled></option>
-									@foreach (Organ organ in (List<Organ>)ViewData["Status"]!)
+									@if (ViewData["Statuses"]!.GetType() == typeof(string))
 									{
-										<option value="@organ.OrganId">@organ.OrganName</option>
+										<option label="@ViewData["Statuses"]!.ToString()" selected disabled></option>
+									}
+									else
+									{
+										<option label="Вибирайте статус ползователь" selected disabled></option>
+										@foreach (GetStatusDto status in (List<GetStatusDto>)ViewData["Statuses"]!)
+										{
+											<option value="@status.StatusId">@status.StatusName</option>
+										}
 									}
 								</select>
-								<span asp-validation-for="OrganId" class="text-danger"></span>
+								<span asp-validation-for="StatusId" class="text-danger"></span>
 							</div>
 
 							<div class="form-group">
 								<label class="tx-medium">Areas</label>
 								<select asp-for="AreaId" class="form-control select2-no-search">
-									<option label="Вибирайте организация" selected disabled></option>
-									@foreach (Organ organ in (List<Organ>)ViewData["Areas"]!)
+									@if (ViewData["Areas"]!.GetType() == typeof(string))
 									{
-										<option value="@organ.OrganId">@organ.OrganName</option>
+										<option label="@ViewData["Areas"]!.ToString()" selected disabled></option>
+									}
+									else
+									{
+										<option label="Вибирайте область ползователь" selected disabled></option>
+										@foreach (GetAreaDto area in (List<GetAreaDto>)ViewData["Areas"]!)
+										{
+											<option value="@area.AreaId">@area.AreaName</option>
+										}
 									}
 								</select>
-								<span asp-validation-for="OrganId" class="text-danger"></span>
+								<span asp-validation-for="AreaId" class="text-danger"></span>
 							</div>
 
 							<div class="form-group">

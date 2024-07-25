@@ -2,6 +2,8 @@
 
 public class Role
 {
-	public required string RoleId { get; set; }
+	public int RoleId { get; set; }
 	public required string RoleName { get; set; }
+	public string? CreatedAt { get; set; }
+	public string? UpdatedAt { get; set; }
 }

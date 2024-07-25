@@ -3,12 +3,12 @@ namespace MVC.Repositories.RoleRepository;
 
 public interface IRoleRepository
 {
-	Task<(bool,string)> CreateRole(Role model);
-	Task<(bool,string)> UpdateRole(Role model);
-	Task<(bool,string)> DeleteRole(string roleId);
-	Task<(bool,string,List<UserRole>)> GetRolesByUserId(string userId);
-	Task<(string,Role?)> GetRoleById(string roleId);
-	Task<(string,List<Role>)> GetRoles();
-	Task<(bool,string)> AddRoleToUser(string roleId, string userId);
-	Task<(bool,string)> DeleteRoleInUser(string roleId, string userId);
+	Task<(bool,string)> CreateRoleAsync(Role model);
+	Task<(bool,string)> UpdateRoleAsync(Role model);
+	Task<(bool,string)> DeleteRoleAsync(int roleId);
+	Task<(string,Role?)> GetRoleByIdAsync(int roleId);
+	Task<(string,List<Role>)> GetRolesAsync();
+	Task<(string,List<UserRole>)> GetRolesByUserIdAsync(int userId);
+	Task<(bool,string)> AddRoleToUserAsync(int roleId, int userId);
+	Task<(bool,string)> DeleteRoleFromUserAsync(int roleId, int userId);
 }

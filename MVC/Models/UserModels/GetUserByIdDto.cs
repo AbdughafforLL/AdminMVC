@@ -8,6 +8,7 @@ public class GetUserByIdDto : BaseUserDto
 	public string OrganName { get; set; } = null!;
 	public string CreatedAt { get; set; } = null!;
 	public string? UpdatedAt { get; set; }
+	public string HashPassword { get; set; } = null!;
 	public List<int> Roles { get; set; } = new();
 	public List<int> Areas { get; set; } = new();
 }

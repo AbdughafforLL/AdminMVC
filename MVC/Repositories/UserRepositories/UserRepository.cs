@@ -1,8 +1,6 @@
-﻿using MVC.Filters;
+﻿using MVC.Entities;
+using MVC.Filters;
 using MVC.Models;
-using MVC.Models.UserModels;
-using System.Data;
-using System.Data.SqlClient;
 namespace MVC.Repositories.UserRepositories;
 
 public class UserRepository(IConfiguration configuration) : IUserRepository
@@ -11,8 +9,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 	{
 		ConString = configuration.GetConnectionString("DefaultConnection")!
 	};
-
-	public async Task<(bool, string)> CreateUser(CreateUserDto model)
+	public async Task<(bool, string)> CreateUserAsync(User model)
 	{
 		try
 		{
@@ -34,21 +31,19 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 					_ado.Command.Parameters.AddWithValue("@phone_number", model.PhoneNumber);
 					_ado.Command.Parameters.AddWithValue("@organ_id", model.OrganId);
 					_ado.Command.Parameters.AddWithValue("@status_id", model.StatusId);
-					_ado.Command.Parameters.AddWithValue("@hash_password", BCrypt.Net.BCrypt.HashPassword("MRX"));
+					_ado.Command.Parameters.AddWithValue("@hash_password", model.HashPassword);
 					_ado.Command.Parameters.AddWithValue("@created_user_id", model.CreatedUserId);
 					_ado.Connection.Open();
-					int status_code = new();
-					string status_message = "";
+					int status_code=0;
 					using (_ado.DataReader = _ado.Command.ExecuteReader())
 					{
 						while (_ado.DataReader.Read())
 						{
-							status_code = (int)_ado.DataReader["status_id"];
-							status_message = (string)_ado.DataReader["status_message"];
+							status_code = (int)_ado.DataReader["status_code"];
 						}
 					}
 					_ado.Connection.Close();
-					return status_code == 0 ? (false, status_message) : (true, "");
+					return status_code == 0 ? (false, "error db") : (true, "");
 				}
 			});
 		}
@@ -57,7 +52,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 			return (false, ex.Message);
 		}
 	}
-	public async Task<(bool, string)> UpdateUser(UpdateUserDto model)
+	public async Task<(bool, string)> UpdateUserAsync(User model)
 	{
 		try
 		{
@@ -81,18 +76,16 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 					_ado.Command.Parameters.AddWithValue("@organ_id", model.OrganId);
 					_ado.Command.Parameters.AddWithValue("@status_id", model.StatusId);
 					_ado.Connection.Open();
-					int status_code = new();
-					string status_message = "";
+					int status_code = 0;
 					using (_ado.DataReader = _ado.Command.ExecuteReader())
 					{
 						while (_ado.DataReader.Read())
 						{
 							status_code = (int)_ado.DataReader["status_id"];
-							status_message = (string)_ado.DataReader["status_message"];
 						}
 					}
 					_ado.Connection.Close();
-					return status_code == 0 ? (false, status_message) : (true, "");
+					return status_code == 0 ? (false, "error") : (true, "");
 				}
 			});
 		}
@@ -101,7 +94,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 			return (false, ex.Message); ;
 		}
 	}
-	public async Task<(bool, string)> DeleteUser(int userId)
+	public async Task<(bool, string)> DeleteUserAsync(int userId)
 	{
 		_ado.SqlQuery = "delete from Users where user_id=@user_id;";
 		try
@@ -114,14 +107,8 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 					_ado.Command.CommandType = CommandType.Text;
 					_ado.Command.Parameters.AddWithValue("@user_id", userId);
 					_ado.Connection.Open();
-					using (_ado.DataReader = _ado.Command.ExecuteReader())
-					{
-						while (_ado.DataReader.Read())
-						{
-
-						}
-						_ado.Connection.Close();
-					}
+					var res = _ado.Command.ExecuteNonQuery();
+					_ado.Connection.Close();
 				}
 				return (true, "");
 			});
@@ -131,9 +118,9 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 			return (false, ex.Message);
 		}
 	}
-	public async Task<(string, GetUserByIdDto?)> GetUserById(int userId)
+	public async Task<(string, User?)> GetUserByIdAsync(int userId)
 	{
-		GetUserByIdDto user = null;
+		User user = null!;
 		try
 		{
 			return await Task.Run(() =>
@@ -157,33 +144,16 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 								FirstName = (string)_ado.DataReader["first_name"],
 								LastName = (string)_ado.DataReader["last_name"],
 								MiddleName = (string)_ado.DataReader["middle_name"],
-								FullName = (string)_ado.DataReader["full_name"],
 								PhoneNumber = (string)_ado.DataReader["phone_number"],
 								AdrText = (string)_ado.DataReader["adr_text"],
 								AdrEmail = (string)_ado.DataReader["adr_email"],
 								AdrWebSite = (string)_ado.DataReader["adr_website"],
-								StatusName = (string)_ado.DataReader["status_name"],
-								CreatedUser = (string)_ado.DataReader["created_user"],
-								OrganName = (string)_ado.DataReader["organ_name"],
+								StatusId = (int)_ado.DataReader["status_name"],
+								CreatedUserId = (int)_ado.DataReader["created_user"],
+								OrganId = (int)_ado.DataReader["organ_name"],
 								CreatedAt = (string)_ado.DataReader["created_at"],
 								UpdatedAt = (string)_ado.DataReader["updated_at"]
 							};
-						}
-
-						if (_ado.DataReader.NextResult())
-						{
-							while (_ado.DataReader.Read())
-							{
-								user.Roles.Add((int)_ado.DataReader["role_id"]);
-							}
-						}
-
-						if (_ado.DataReader.NextResult())
-						{
-							while (_ado.DataReader.Read())
-							{
-								user.Areas.Add((int)_ado.DataReader["area_id"]);
-							}
 						}
 						_ado.Connection.Close();
 					}
@@ -196,10 +166,10 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 			return (ex.Message, user);
 		}
 	}
-	public async Task<(string, GetUserByUserName?)> GetUserByUserName(string userName)
+	public async Task<(string, User?)> GetUserByUserNameAsync(string userName)
 	{
-		GetUserByUserName user = null;
-		_ado.SqlQuery = "select user_id,user_name,hash_password from Users where user_name = @user_name;";
+		User user = null!;
+		_ado.SqlQuery = "select * from Users where user_name = @user_name;";
 		try
 		{
 			return await Task.Run(() =>
@@ -213,11 +183,26 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 					_ado.DataReader = _ado.Command.ExecuteReader();
 					while (_ado.DataReader.Read())
 					{
-						user = new GetUserByUserName()
+						user = new User()
 						{
 							UserId = (int)_ado.DataReader["user_id"],
 							UserName = (string)_ado.DataReader["user_name"],
-							HashPassword = (string)_ado.DataReader["hash_password"]
+							Ips = (string)_ado.DataReader["ips"],
+							Inn = (string)_ado.DataReader["inn"],
+							FirstName = (string)_ado.DataReader["first_name"],
+							LastName = (string)_ado.DataReader["last_name"],
+							MiddleName = (string)_ado.DataReader["middle_name"],
+							FullName = (string)_ado.DataReader["full_name"],
+							AdrText = (string)_ado.DataReader["adr_text"],
+							AdrEmail = (string)_ado.DataReader["adr_email"],
+							AdrWebSite = (string)_ado.DataReader["adr_website"],
+							CreatedAt = (string)_ado.DataReader["created_at"],
+							UpdatedAt = (string)_ado.DataReader["updated_at"],
+							OrganId = (int)_ado.DataReader["organ_id"],
+							StatusId = (int)_ado.DataReader["status_id"],
+							CreatedUserId = (int)_ado.DataReader["created_user_id"],
+							PhoneNumber = (string)_ado.DataReader["phone_number"],
+							HashPassword = (string)_ado.DataReader["hash_password"],
 						};
 					}
 					_ado.Connection.Close();
@@ -231,9 +216,9 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 		}
 
 	}
-	public async Task<(string, List<GetUsersDto>)> GetUsers(UserFilters model)
+	public async Task<(string, List<User>)> GetUsersAsync(UserFilters model)
 	{
-		List<GetUsersDto> users = new();
+		List<User> users = new();
 		try
 		{
 			return await Task.Run(() =>
@@ -252,7 +237,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 					_ado.DataReader = _ado.Command.ExecuteReader();
 					while (_ado.DataReader.Read())
 					{
-						GetUsersDto user = new()
+						User user = new()
 						{
 							UserId = (int)_ado.DataReader["user_id"],
 							UserName = (string)_ado.DataReader["user_name"],
@@ -266,9 +251,9 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 							AdrText = (string)_ado.DataReader["adr_text"],
 							AdrEmail = (string)_ado.DataReader["adr_email"],
 							AdrWebSite = (string)_ado.DataReader["adr_website"],
-							StatusName = (string)_ado.DataReader["status_name"],
-							CreatedUser = (string)_ado.DataReader["created_user"],
-							OrganName = (string)_ado.DataReader["organ_name"],
+							StatusId = (int)_ado.DataReader["status_id"],
+							CreatedUserId = (int)_ado.DataReader["created_user_id"],
+							OrganId = (int)_ado.DataReader["organ_id"],
 							CreatedAt = (string)_ado.DataReader["created_at"],
 							UpdatedAt = (string)_ado.DataReader["updated_at"]
 						};
@@ -282,6 +267,36 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 		catch (Exception ex)
 		{
 			return (ex.Message, users);
+		}
+	}
+	public async Task<(string, List<int>)> GetRolesByUserIdAsync(int userId)
+	{
+		_ado.SqlQuery = "select role_id from UserRoles where user_id = @user_id union select role_id from StatusRoles where status_id = (select status_id from Users where user_id = @user_id)";
+		List<int> roles = new();
+		try
+		{
+			return await Task.Run(() =>
+			{
+				using (_ado.Connection = new SqlConnection(_ado.ConString))
+				{
+					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
+					_ado.Command.CommandType = CommandType.Text;
+					_ado.Command.Parameters.AddWithValue("@user_id",userId);
+
+					_ado.Connection.Open();
+					_ado.DataReader = _ado.Command.ExecuteReader();
+					while (_ado.DataReader.Read())
+					{
+						roles.Add((int)_ado.DataReader["role_id"]);
+					}
+					_ado.Connection.Close();
+				}
+				return ("", roles);
+			});
+		}
+		catch (Exception ex)
+		{
+			return (ex.Message, roles);
 		}
 	}
 }

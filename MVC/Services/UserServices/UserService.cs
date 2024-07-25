@@ -1,45 +1,52 @@
-﻿using MVC.Models;
+﻿using MVC.Entities;
+using MVC.Filters;
+using MVC.Models;
 using MVC.Models.UserModels;
 using MVC.Repositories.UserRepositories;
-using System.Net;
 namespace MVC.Services.UserServices;
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService(IUserRepository userRepository,IMapper mapper) : IUserService
 {
 	public async Task<Response<bool>> CreateUserAsync(CreateUserDto model)
 	{
-		var (res, message) = await userRepository.CreateUser(model);
+		var (res, message) = await userRepository.CreateUserAsync(mapper.Map<User>(model));
 		if (res) return new Response<bool>(res);
 		return new Response<bool>(HttpStatusCode.InternalServerError, message);
 	}
 	public async Task<Response<bool>> DeleteUserAsync(int userId)
 	{
-		var (res, message) = await userRepository.DeleteUser(userId);
+		var (res, message) = await userRepository.DeleteUserAsync(userId);
 		if (res) return new Response<bool>(res);
 		return new Response<bool>(HttpStatusCode.InternalServerError, message);
 	}
 	public async Task<Response<bool>> UpdateUserAsync(UpdateUserDto model)
 	{
-		var (res, message) = await userRepository.UpdateUser(model);
+		var (res, message) = await userRepository.UpdateUserAsync(mapper.Map<User>(model));
 		if (res) return new Response<bool>(res);
 		return new Response<bool>(HttpStatusCode.InternalServerError, message);
 	}
 	public async Task<Response<GetUserByIdDto>> GetUserByIdAsync(int userId)
 	{
-		var (res, message, user) = await userRepository.GetUserById(userId);
-		if (res) return new Response<GetUserByIdDto>(user!);
+		var (message, user) = await userRepository.GetUserByIdAsync(userId);
+		if (user is null) return new Response<GetUserByIdDto>(HttpStatusCode.InternalServerError, message);
+		return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
+	}
+	public async Task<Response<GetUserByIdDto>> GetUserByUserNameAsync(string userName)
+	{
+		var (message, user) = await userRepository.GetUserByUserNameAsync(userName);
+		if (user is not null) return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
 		return new Response<GetUserByIdDto>(HttpStatusCode.InternalServerError, message);
 	}
-	public async Task<Response<GetUserByUserName>> GetUserByUserNameAsync(string userName)
+	public async Task<Response<List<GetUsersDto>>> GetUsersAsync(UserFilters model)
 	{
-		var (res, message, user) = await userRepository.GetUserByUserName(userName);
-		if (res) return new Response<GetUserByUserName>(user!);
-		return new Response<GetUserByUserName>(HttpStatusCode.InternalServerError, message);
+		var (message, users) = await userRepository.GetUsersAsync(model);
+		if (users.Count!=0) return new Response<List<GetUsersDto>>(mapper.Map<List<GetUsersDto>>(users));
+		return new Response<List<GetUsersDto>>(HttpStatusCode.InternalServerError, message = message == "" ? "добавте ползователь": message);
 	}
-	public async Task<Response<List<GetUsersDto>>> GetUsersAsync()
+	public async Task<Response<List<int>>> GetRolesByUserIdAsync(int user_id)
 	{
-		var (res, message, users) = await userRepository.GetUsers();
-		if (res) return new Response<List<GetUsersDto>>(users!);
-		return new Response<List<GetUsersDto>>(HttpStatusCode.InternalServerError, message);
+		var (message,roles) = await userRepository.GetRolesByUserIdAsync(user_id);
+		if (roles.Count < 1) return new Response<List<int>>(HttpStatusCode.InternalServerError,message = message == "" ? "not found" : message);
+		return new Response<List<int>>(roles);
 	}
 }

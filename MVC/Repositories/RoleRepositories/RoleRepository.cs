@@ -1,7 +1,5 @@
 ﻿using MVC.Entities;
 using MVC.Models;
-using System.Data;
-using System.Data.SqlClient;
 namespace MVC.Repositories.RoleRepository;
 
 public class RoleRepository(IConfiguration configuration) : IRoleRepository
@@ -11,9 +9,9 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 		ConString = configuration.GetConnectionString("DefaultConnection")!
 	};
 
-	public async Task<(bool,string)> CreateRole(Role model)
+	public async Task<(bool,string)> CreateRoleAsync(Role model)
 	{
-		_ado.SqlQuery = "insert into Roles(role_name) Values (@roleName);";
+		_ado.SqlQuery = "insert into Roles(role_name) Values(@role_name);";
 		try
 		{
 			return await Task.Run(() =>
@@ -26,7 +24,7 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 					_ado.Connection.Open();
 					int i = _ado.Command.ExecuteNonQuery();
 					_ado.Connection.Close();
-					return (true,"");
+					return (Convert.ToBoolean(i),"");
 				}
 			});
 		}
@@ -35,10 +33,9 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 			return (false, ex.Message);
 		}
 	}
-	public async Task<(bool,string,List<UserRole>)> GetRolesByUserId(string userId)
+	public async Task<(bool, string)> UpdateRoleAsync(Role model)
 	{
-		List<UserRole> roles = new();
-		_ado.SqlQuery = "select * from UserRoles where user_id = @user_id;";
+		_ado.SqlQuery = "update from Roles set role_name = @role_name where role_id = @role_id;";
 		try
 		{
 			return await Task.Run(() =>
@@ -47,32 +44,23 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 				{
 					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
 					_ado.Command.CommandType = CommandType.Text;
-					_ado.Command.Parameters.AddWithValue("@user_id", userId);
-
+					_ado.Command.Parameters.AddWithValue("@role_id", model.RoleId);
+					_ado.Command.Parameters.AddWithValue("@role_name", model.RoleName);
 					_ado.Connection.Open();
-					_ado.DataReader = _ado.Command.ExecuteReader();
-					while (_ado.DataReader.Read())
-					{
-						var role = new UserRole()
-						{
-							RoleId = (string)_ado.DataReader["role_id"],
-							UserId = (string)_ado.DataReader["user_id"]
-						};
-						roles.Add(role);
-					}
+					int i = _ado.Command.ExecuteNonQuery();
 					_ado.Connection.Close();
+					return (Convert.ToBoolean(i), "");
 				}
-				return (true,"",roles);
 			});
 		}
 		catch (Exception ex)
 		{
-			return (false,ex.Message,roles);
+			return (false, ex.Message);
 		}
 	}
-	public async Task<(bool,string)> DeleteRole(string roleId)
+	public async Task<(bool, string)> DeleteRoleAsync(int roleId)
 	{
-		_ado.SqlQuery = "delete from Roles where role_id = @roleId;";
+		_ado.SqlQuery = "delete from Roles where role_id = @role_id;";
 		try
 		{
 			return await Task.Run(() =>
@@ -81,24 +69,23 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 				{
 					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
 					_ado.Command.CommandType = CommandType.Text;
-					_ado.Command.Parameters.AddWithValue("@roleId", roleId);
-
+					_ado.Command.Parameters.AddWithValue("@role_id", roleId);
 					_ado.Connection.Open();
 					int i = _ado.Command.ExecuteNonQuery();
 					_ado.Connection.Close();
-					return (true,"");
+					return (Convert.ToBoolean(i), "");
 				}
 			});
 		}
 		catch (Exception ex)
 		{
-			return (false,ex.Message);
+			return (false, ex.Message);
 		}
 	}
-	public async Task<(string,Role?)> GetRoleById(string roleId)
+	public async Task<(string,Role?)> GetRoleByIdAsync(int roleId)
 	{
 		Role role = null!;
-		_ado.SqlQuery = "select * from Roles where role_id = @roleId;";
+		_ado.SqlQuery = "select * from Roles where role_id = @role_id;";
 		try
 		{
 			return await Task.Run(() =>
@@ -107,16 +94,17 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 				{
 					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
 					_ado.Command.CommandType = CommandType.Text;
-					_ado.Command.Parameters.AddWithValue("@roleId", roleId);
-
+					_ado.Command.Parameters.AddWithValue("@role_id", roleId);
 					_ado.Connection.Open();
 					_ado.DataReader = _ado.Command.ExecuteReader();
 					while (_ado.DataReader.Read())
 					{
 						role = new Role()
 						{
-							RoleId = (string)_ado.DataReader["role_id"],
+							RoleId = (int)_ado.DataReader["role_id"],
 							RoleName = (string)_ado.DataReader["role_name"],
+							CreatedAt = (string)_ado.DataReader["created_at"],
+							UpdatedAt = (string)_ado.DataReader["updated_at"]
 						};
 					}
 					_ado.Connection.Close();
@@ -129,7 +117,7 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 			return (ex.Message,role);
 		}
 	}
-	public async Task<(string,List<Role>)> GetRoles()
+	public async Task<(string,List<Role>)> GetRolesAsync()
 	{
 		List<Role> roles = new();
 		_ado.SqlQuery = "select * from Roles;";
@@ -148,8 +136,10 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 					{
 						var role = new Role()
 						{
-							RoleId = (string)_ado.DataReader["role_id"],
+							RoleId = (int)_ado.DataReader["role_id"],
 							RoleName = (string)_ado.DataReader["role_name"],
+							CreatedAt= (string)_ado.DataReader["created_at"],
+							UpdatedAt = (string)_ado.DataReader["updated_at"]
 						};
 						roles.Add(role);
 					}
@@ -163,9 +153,10 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 			return (ex.Message,roles);
 		}
 	}
-	public async Task<(bool,string)> UpdateRole(Role model)
+	public async Task<(string,List<UserRole>)> GetRolesByUserIdAsync(int userId)
 	{
-		_ado.SqlQuery = "update from Roles set role_name = @roleName where role_id = @roleId;";
+		List<UserRole> roles = new();
+		_ado.SqlQuery = "select * from UserRoles where user_id = @user_id;";
 		try
 		{
 			return await Task.Run(() =>
@@ -174,24 +165,33 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 				{
 					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
 					_ado.Command.CommandType = CommandType.Text;
-					_ado.Command.Parameters.AddWithValue("@role_id", model.RoleId);
-					_ado.Command.Parameters.AddWithValue("@role_name", model.RoleName);
-
+					_ado.Command.Parameters.AddWithValue("@user_id", userId);
 					_ado.Connection.Open();
-					int i = _ado.Command.ExecuteNonQuery();
+					_ado.DataReader = _ado.Command.ExecuteReader();
+					while (_ado.DataReader.Read())
+					{
+						var role = new UserRole()
+						{
+							RoleId = (int)_ado.DataReader["role_id"],
+							UserId = (int)_ado.DataReader["user_id"],
+							CreatedAt = (string)_ado.DataReader["created_at"],
+							UpdatedAt = (string)_ado.DataReader["updated_at"]
+						};
+						roles.Add(role);
+					}
 					_ado.Connection.Close();
-					return (true, "");
 				}
+				return ("",roles);
 			});
 		}
 		catch (Exception ex)
 		{
-			return (false,ex.Message);
+			return (ex.Message,roles);
 		}
 	}
-	public async Task<(bool,string)> AddRoleToUser(string roleId, string userId)
+	public async Task<(bool,string)> AddRoleToUserAsync(int roleId, int userId)
 	{
-		_ado.SqlQuery = "insert into UserRoles(user_id,role_id)Values(@user_id,@role_id);";
+		_ado.SqlQuery = "insert into UserRoles(user_id,role_id) Values(@user_id,@role_id);";
 		try
 		{
 			return await Task.Run(() =>
@@ -214,9 +214,9 @@ public class RoleRepository(IConfiguration configuration) : IRoleRepository
 			return (false,ex.Message);
 		}
 	}
-	public async Task<(bool,string)> DeleteRoleInUser(string roleId, string userId)
+	public async Task<(bool,string)> DeleteRoleFromUserAsync(int roleId, int userId)
 	{
-		_ado.SqlQuery = "delete from UserRoles where user_id = @user_Id and role_id=@role_Id;";
+		_ado.SqlQuery = "delete from UserRoles where user_id = @user_Id and role_id = @role_Id;";
 		try
 		{
 			return await Task.Run(() =>

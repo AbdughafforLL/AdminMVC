@@ -1,5 +1,4 @@
-﻿using System.Data.SqlClient;
-namespace MVC.Models;
+﻿namespace MVC.Models;
 
 public class SqlAdoModel
 {

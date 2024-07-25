@@ -1,16 +1,21 @@
 ﻿using MVC.Models;
 using MVC.Models.AccountModels;
 using MVC.Repositories.UserRepositories;
-using System.Net;
-using System.Security.Claims;
 namespace MVC.Services.AccountServices;
 
-public class AccountService(IUserRepository userRepository) : IAccountService
+public class AccountService(IUserRepository userRepository,IMapper mapper) : IAccountService
 {
+	public async Task<Response<GetProfileDto>> GetProfile(int userId)
+	{
+		var (message,user) = await userRepository.GetUserByIdAsync(userId);
+		if (user is null) return new Response<GetProfileDto>(HttpStatusCode.BadRequest,message);
+		var mappedUser = mapper.Map<GetProfileDto>(user);
+		return new Response<GetProfileDto>(mappedUser);
+	}
 	public async Task<Response<List<Claim>>> Login(LoginModel model)
 	{
-		var (res, message, user) = await userRepository.GetUserByUserName(model.UserName);
-		if (!res || user.UserName is null) return new Response<List<Claim>>(HttpStatusCode.BadRequest, message);
+		var (message, user) = await userRepository.GetUserByUserNameAsync(model.UserName);
+		if (user is null) return new Response<List<Claim>>(HttpStatusCode.BadRequest, message);
 
 		if (!BCrypt.Net.BCrypt.Verify(model.Password, user!.HashPassword))
 			return new Response<List<Claim>>(HttpStatusCode.BadRequest, "password incorrect");

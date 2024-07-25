@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-
-namespace MVC.Extentions;
+﻿namespace MVC.Extentions;
 public static class CookieExtentions
 {
 	public static void ConfigCookie(this IServiceCollection services)

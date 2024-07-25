@@ -1,31 +1,31 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MVC.Models.AccountModels;
+﻿using MVC.Models.AccountModels;
 using MVC.Services.AccountServices;
-using System.Security.Claims;
 namespace MVC.Controllers;
-
+[Authorize]
 public class AdminController(IAccountService service) : Controller
-{
-	[Authorize]
+{ 
 	public IActionResult Index()
 	{
-		var userName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-
 		var user_id = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
-
 		return View();
 	}
-	public IActionResult Login() => View();
-	public async Task<IActionResult> Logout()
+	public async Task<IActionResult> Profile()
 	{
-		await HttpContext.SignOutAsync();
-		return RedirectToAction("Login");
+		var user_id = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+		var res = await service.GetProfile(user_id);
+		if (res.StatusCode != 200) 
+			return RedirectToAction("Index");
+		return View(res.Data);
 	}
 
-	[HttpPost]
+
+
+
+
+	[AllowAnonymous]
+	public IActionResult Login() => View();
+
+	[HttpPost,AllowAnonymous]
 	public async Task<IActionResult> Login(LoginModel model)
 	{
 		if (!ModelState.IsValid)
@@ -51,5 +51,10 @@ public class AdminController(IAccountService service) : Controller
 			authProperties
 		);
 		return RedirectToAction("Index", "Admin");
+	}
+	public async Task<IActionResult> Logout()
+	{
+		await HttpContext.SignOutAsync();
+		return RedirectToAction("Login");
 	}
 }

@@ -1,6 +1,4 @@
-﻿using System.Net;
-namespace MVC.Models;
-
+﻿namespace MVC.Models;
 public class Response<T>
 {
 	public int StatusCode { get; set; }

@@ -1,7 +1,4 @@
-﻿using Serilog;
-
-namespace MVC.Extentions;
-
+﻿namespace MVC.Extentions;
 public static class LoggerExtentions
 {
 	public static void LoggerConfigure(this ILoggingBuilder logging, ConfigurationManager config)

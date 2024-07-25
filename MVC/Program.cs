@@ -1,6 +1,5 @@
 using MVC.AutoMapper;
 using MVC.Extentions;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();

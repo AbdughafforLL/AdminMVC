@@ -52,10 +52,17 @@
 							<div class="form-group">
 								<label class="tx-medium">Category</label>
 								<select asp-for="OrganId" class="form-control select2-no-search">
-									<option label="Вибирайте организация" selected disabled></option>
-									@foreach (Organ organ in (List<Organ>)ViewData["Organs"])
+									@if (ViewData["Organs"]!.GetType() == typeof(string))
 									{
-										<option value="@organ.OrganId">@organ.OrganName</option>
+										<option label=@ViewData["Organs"]!.ToString() selected disabled></option>
+									}
+									else
+									{
+										<option label="Вибирайте организация" selected disabled></option>
+										@foreach (Organ organ in (List<Organ>)ViewData["Organs"]!)
+										{
+											<option value="@organ.OrganId">@organ.OrganName</option>
+										}
 									}
 								</select>
 								<span asp-validation-for="OrganId" class="text-danger"></span>

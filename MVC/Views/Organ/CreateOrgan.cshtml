@@ -1,8 +1,17 @@
-﻿@using MVC.Entities
-@model MVC.Models.OrganModels.CreateOrganDto
+﻿@model MVC.Models.OrganModels.CreateOrganDto
 @{
 	Layout = "_AdminLayout";
 	ViewData["Title"] = "Create User";
+}
+
+@if (ViewBag.Message != null)
+{
+	<div class="alert alert-danger alert-bdleft-danger w-25 mx-auto">
+		<button type="button" class="btn-close float-end fs-10" data-bs-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">×</span>
+		</button>
+		<strong>@ViewBag.Message</strong>
+	</div>
 }
 
 <div class="main-content side-content pt-0" data-select2-id="12">
@@ -34,8 +43,8 @@
 					<div class="card custom-card">
 						<form asp-action="CreateOrgan" method="post" class="card-body">
 							<div class="form-group">
-								<label for="userName" class="tx-medium">User name</label>
-								<input asp-for="OrganName" type="text" id="userName" class="form-control" placeholder="User name">
+								<label for="organName" class="tx-medium">Имя организации</label>
+								<input asp-for="OrganName" type="text" id="organName" class="form-control" placeholder="Введите имя организации">
 								<span asp-validation-for="OrganName" class="text-danger"></span>
 							</div>
 							<div class="card-footer mb-1">

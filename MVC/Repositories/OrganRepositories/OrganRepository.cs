@@ -1,7 +1,5 @@
 ﻿using MVC.Entities;
 using MVC.Models;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace MVC.Repositories.OrganRepositories;
 public class OrganRepository(IConfiguration configuration) : IOrganRepository
@@ -10,9 +8,9 @@ public class OrganRepository(IConfiguration configuration) : IOrganRepository
 	{
 		ConString = configuration.GetConnectionString("DefaultConnection")!
 	};
-	public async Task<(bool, string)> CreateOrgan(Organ model)
+	public async Task<(bool, string)> CreateOrganAsync(Organ model)
 	{
-		_ado.SqlQuery = "insert into Organs(organ_name)Values (@organ_name);";
+		_ado.SqlQuery = "insert into Organs(organ_name)Values(@organ_name);";
 		try
 		{
 			return await Task.Run(() =>
@@ -25,7 +23,7 @@ public class OrganRepository(IConfiguration configuration) : IOrganRepository
 					_ado.Connection.Open();
 					int i = _ado.Command.ExecuteNonQuery();
 					_ado.Connection.Close();
-					return (true, "");
+					return (Convert.ToBoolean(i), "");
 				}
 			});
 		}
@@ -34,9 +32,9 @@ public class OrganRepository(IConfiguration configuration) : IOrganRepository
 			return (false, ex.Message);
 		}
 	}
-	public async Task<(bool, string)> UpdateOrgan(Organ model)
+	public async Task<(bool, string)> UpdateOrganAsync(Organ model)
 	{
-		_ado.SqlQuery = "update Organs set organ_name = @organ_name,updated_at = GETDATE() where organ_id = @organ_id;";
+		_ado.SqlQuery = "update Organs set organ_name = @organ_name,updated_at = CONVERT(NVARCHAR(30),GETDATE(),120) where organ_id = @organ_id;";
 		try
 		{
 			return await Task.Run(() =>
@@ -50,7 +48,7 @@ public class OrganRepository(IConfiguration configuration) : IOrganRepository
 					_ado.Connection.Open();
 					int i = _ado.Command.ExecuteNonQuery();
 					_ado.Connection.Close();
-					return (true, "");
+					return (Convert.ToBoolean(i),"");
 				}
 			});
 		}
@@ -59,7 +57,7 @@ public class OrganRepository(IConfiguration configuration) : IOrganRepository
 			return (false, ex.Message);
 		}
 	}
-	public async Task<(bool, string)> DeleteOrgan(int organId)
+	public async Task<(bool, string)> DeleteOrganAsync(int organId)
 	{
 		_ado.SqlQuery = "delete from Organs where organ_id = @organ_id;";
 		try
@@ -74,7 +72,7 @@ public class OrganRepository(IConfiguration configuration) : IOrganRepository
 					_ado.Connection.Open();
 					int i = _ado.Command.ExecuteNonQuery();
 					_ado.Connection.Close();
-					return (true, "");
+					return (Convert.ToBoolean(i), "");
 				}
 			});
 		}
@@ -83,60 +81,74 @@ public class OrganRepository(IConfiguration configuration) : IOrganRepository
 			return (false, ex.Message);
 		}
 	}
-	public async Task<Organ> GetOrganById(int organId)
+	public async Task<(string,Organ?)> GetOrganByIdAsync(int organId)
 	{
 		Organ organ = null!;
 		_ado.SqlQuery = "select * from Organs where organ_id = @organ_id;";
-		return await Task.Run(() =>
+		try
 		{
-			using (_ado.Connection = new SqlConnection(_ado.ConString))
+			return await Task.Run(() =>
 			{
-				_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
-				_ado.Command.CommandType = CommandType.Text;
-				_ado.Command.Parameters.AddWithValue("@organ_id", organId);
-				_ado.Connection.Open();
-				_ado.DataReader = _ado.Command.ExecuteReader();
-				while (_ado.DataReader.Read())
+				using (_ado.Connection = new SqlConnection(_ado.ConString))
 				{
-					organ = new Organ()
+					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
+					_ado.Command.CommandType = CommandType.Text;
+					_ado.Command.Parameters.AddWithValue("@organ_id", organId);
+					_ado.Connection.Open();
+					_ado.DataReader = _ado.Command.ExecuteReader();
+					while (_ado.DataReader.Read())
 					{
-						OrganId = (int)_ado.DataReader["organ_id"],
-						OrganName = (string)_ado.DataReader["organ_name"],
-						CreatedAt = _ado.DataReader["created_at"].ToString(),
-						UpdatedAt = _ado.DataReader["updated_at"].ToString()
-					};
+						organ = new Organ()
+						{
+							OrganId = (int)_ado.DataReader["organ_id"],
+							OrganName = (string)_ado.DataReader["organ_name"],
+							CreatedAt = (string)_ado.DataReader["created_at"],
+							UpdatedAt = (string)_ado.DataReader["updated_at"]
+						};
+					}
+					_ado.Connection.Close();
 				}
-				_ado.Connection.Close();
-			}
-			return organ;
-		});
+				return ("", organ);
+			});
+		}
+		catch (Exception ex)
+		{
+			return (ex.Message, organ);
+		}
 	}
-	public async Task<List<Organ>> GetOrgans()
+	public async Task<(string,List<Organ>)> GetOrgansAsync()
 	{
 		List<Organ> organs = new();
 		_ado.SqlQuery = "select * from Organs;";
-		return await Task.Run(() =>
+		try
 		{
-			using (_ado.Connection = new SqlConnection(_ado.ConString))
+			return await Task.Run(() =>
 			{
-				_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
-				_ado.Command.CommandType = CommandType.Text;
-				_ado.Connection.Open();
-				_ado.DataReader = _ado.Command.ExecuteReader();
-				while (_ado.DataReader.Read())
+				using (_ado.Connection = new SqlConnection(_ado.ConString))
 				{
-					Organ organ = new()
+					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
+					_ado.Command.CommandType = CommandType.Text;
+					_ado.Connection.Open();
+					_ado.DataReader = _ado.Command.ExecuteReader();
+					while (_ado.DataReader.Read())
 					{
-						OrganId = (int)_ado.DataReader["organ_id"],
-						OrganName = (string)_ado.DataReader["organ_name"],
-						CreatedAt = _ado.DataReader["created_at"].ToString(),
-						UpdatedAt = _ado.DataReader["updated_at"].ToString()
-					};
-					organs.Add(organ);
+						Organ organ = new()
+						{
+							OrganId = (int)_ado.DataReader["organ_id"],
+							OrganName = (string)_ado.DataReader["organ_name"],
+							CreatedAt = (string)_ado.DataReader["created_at"],
+							UpdatedAt = (string)_ado.DataReader["updated_at"]
+						};
+						organs.Add(organ);
+					}
+					_ado.Connection.Close();
 				}
-				_ado.Connection.Close();
-			}
-			return organs;
-		});
+				return ("",organs);
+			});
+		}
+		catch (Exception ex)
+		{
+			return (ex.Message, organs);
+		}
 	}
 }
