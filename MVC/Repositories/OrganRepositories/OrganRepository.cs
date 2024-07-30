@@ -35,26 +35,21 @@ public class OrganRepository : IOrganRepository
 
 		return (res, message);
 	}
-	public async Task<(string,GetOrganDto?)> GetOrganByIdAsync(int organId)
+	public async Task<(string,DataTable?)> GetOrganByIdAsync(int organId)
 	{
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",4),
 			new SqlParameter("@organ_id",organId)
 		};
-
-		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryAreas", parameters);
-
-		var organ = new GetOrganDto() { OrganName = "" };
-		return (res, organ);
+		var (res, dt) = await SQL.ExecuteQueryDataTableAsync("QueryOrgans", parameters);
+		return (res, dt);
 	}
-	public async Task<(string,List<GetOrganDto>)> GetOrgansAsync()
+	public async Task<(string,DataTable?)> GetOrgansAsync()
 	{
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",5),
 		};
-
-		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryAreas", parameters);
-		var organs = new List<GetOrganDto>();
-		return (res, organs);
+		var (res, dt) = await SQL.ExecuteQueryDataTableAsync("QueryOrgans", parameters);
+		return (res, dt);
 	}
 }

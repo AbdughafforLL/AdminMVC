@@ -1,5 +1,4 @@
-﻿@using MVC.Entities
-@using MVC.Models.AreaModels
+﻿@using MVC.Models.AreaModels
 @using MVC.Models.OrganModels
 @using MVC.Models.StatusModels
 @using MVC.Models.UserModels
@@ -119,7 +118,7 @@
 
 							<div class="form-group">
 								<label class="tx-medium">Status</label>
-								<select asp-for="StatusId" class="form-control select2-no-search">
+								<select asp-for="ProfessionId" class="form-control select2-no-search">
 									@if (ViewData["Statuses"]!.GetType() == typeof(string))
 									{
 										<option label="@ViewData["Statuses"]!.ToString()" selected disabled></option>
@@ -127,13 +126,13 @@
 									else
 									{
 										<option label="Вибирайте статус ползователь" selected disabled></option>
-										@foreach (GetStatusDto status in (List<GetStatusDto>)ViewData["Statuses"]!)
+										@foreach (GetProfessionDto status in (List<GetProfessionDto>)ViewData["Statuses"]!)
 										{
-											<option value="@status.StatusId">@status.StatusName</option>
+											<option value="@status.ProfessionId">@status.ProfessionName</option>
 										}
 									}
 								</select>
-								<span asp-validation-for="StatusId" class="text-danger"></span>
+								<span asp-validation-for="ProfessionId" class="text-danger"></span>
 							</div>
 
 							<div class="form-group">

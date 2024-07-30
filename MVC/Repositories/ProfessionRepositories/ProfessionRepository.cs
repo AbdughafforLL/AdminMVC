@@ -34,23 +34,21 @@ public class ProfessionRepository : IProfessionRepository
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryProfession", parameters);
 		return (res, message);
 	}
-	public async Task<(string, GetProfessionDto?)> GetProfessionByIdAsync(int professionId)
+	public async Task<(string, DataTable?)> GetProfessionByIdAsync(int professionId)
 	{
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",4),
 			new SqlParameter("@profession_id",professionId)
 		};
-		var (message, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryProfession", parameters);
-		var profession = new GetProfessionDto();
-		return (message, profession);
+		var (message, dt) = await SQL.ExecuteQueryDataTableAsync("QueryProfession", parameters);
+		return (message, dt);
 	}
-	public async Task<(string, List<GetProfessionDto>)> GetProfessionsAsync()
+	public async Task<(string, DataTable?)> GetProfessionsAsync()
 	{
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",5),
 		};
-		var (message, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryProfession", parameters);
-		var professions = new List<GetProfessionDto>();
-		return (message, professions);
+		var (message, dt) = await SQL.ExecuteQueryDataTableAsync("QueryProfession", parameters);
+		return (message, dt);
 	}
 }

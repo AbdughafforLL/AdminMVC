@@ -1,4 +1,4 @@
-﻿using MVC.Entities;
+﻿using MVC.Helpers;
 using MVC.Models;
 using MVC.Models.AreaModels;
 using MVC.Repositories.AreaRepositories;
@@ -26,16 +26,16 @@ public class AreaService(IAreaRepository areaRepository,IMapper mapper) : IAreaS
 	}
 	public async Task<Response<GetAreaDto>> GetAreaByIdAsync(int areaId)
 	{
-		var (message,area) = await areaRepository.GetAreaByIdAsync(areaId);
-		if (area is null) return new Response<GetAreaDto>(HttpStatusCode.InternalServerError, message);
-		var areaMapped = mapper.Map<GetAreaDto>(area);
-		return new Response<GetAreaDto>(areaMapped);
+		var (message,dt) = await areaRepository.GetAreaByIdAsync(areaId);
+		if (dt is null) return new Response<GetAreaDto>(HttpStatusCode.InternalServerError, message);
+		var area = mapper.Map<GetAreaDto>(dt);
+		return new Response<GetAreaDto>(area);
 	}
 	public async Task<Response<List<GetAreaDto>>> GetAreasAsync()
 	{
-		var (message, areas) = await areaRepository.GetAreasAsync();
-		if (areas.Count < 1) return new Response<List<GetAreaDto>>(HttpStatusCode.InternalServerError, message = message == "" ? "Добавьте область" : message);
-		var areaMapped = mapper.Map<List<GetAreaDto>>(areas);
-		return new Response<List<GetAreaDto>>(areaMapped);
+		var (message, dt) = await areaRepository.GetAreasAsync();
+		if (dt is null) return new Response<List<GetAreaDto>>(HttpStatusCode.InternalServerError, message = message == "" ? "Добавьте область" : message);
+		var areas = MapHelper.MapDataTableToList<GetAreaDto>(dt,mapper);
+		return new Response<List<GetAreaDto>>(areas);
 	}
 }

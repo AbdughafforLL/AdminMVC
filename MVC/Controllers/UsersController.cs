@@ -8,7 +8,7 @@ using MVC.Services.UserServices;
 namespace MVC.Controllers;
 [Authorize]
 public class UsersController(IUserService service,IOrganService organService,
-			IStatusService statusService,IAreaService areaService) : Controller
+			IProfessionService professionService,IAreaService areaService) : Controller
 {
 	public async Task<IActionResult> Index(UserFilters model)
 	{
@@ -41,25 +41,25 @@ public class UsersController(IUserService service,IOrganService organService,
 
 	public async Task<IActionResult> CreateUser()
 	{
-		var resStatus = await statusService.GetStatusesAsync();
+		var resProfessions = await professionService.GetProfessionsAsync();
 		var resAreas = await areaService.GetAreasAsync();
 		var resOrgans = await organService.GetOrgansAsync();
 		ViewData["Organs"] = resOrgans.StatusCode != 200 ? resOrgans.Message : resOrgans.Data;
 		ViewData["Areas"] = resAreas.StatusCode != 200 ? resAreas.Message : resAreas.Data;
-		ViewData["Statuses"] = resStatus.StatusCode != 200 ? resStatus.Message : resStatus.Data;
+		ViewData["Statuses"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
 		return View();
 	}
 	[HttpPost]
 	public async Task<IActionResult> CreateUser(CreateUserDto model)
 	{
-		var resStatus = await statusService.GetStatusesAsync();
+		var resProfessions = await professionService.GetProfessionsAsync();
 		var resAreas = await areaService.GetAreasAsync();
 		var resOrgans = await organService.GetOrgansAsync();
 		if (!ModelState.IsValid)
 		{
 			ViewData["Organs"] = resOrgans.StatusCode != 200 ? resOrgans.Message : resOrgans.Data;
 			ViewData["Areas"] = resAreas.StatusCode != 200 ? resAreas.Message : resAreas.Data;
-			ViewData["Statuses"] = resStatus.StatusCode != 200 ? resStatus.Message : resStatus.Data;
+			ViewData["Statuses"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
 			return View(model);
 		}
 		model.CreatedUserId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
@@ -69,7 +69,7 @@ public class UsersController(IUserService service,IOrganService organService,
 			ViewBag.Message = res.Message;
 			ViewData["Organs"] = resOrgans.StatusCode != 200 ? resOrgans.Message : resOrgans.Data;
 			ViewData["Areas"] = resAreas.StatusCode != 200 ? resAreas.Message : resAreas.Data;
-			ViewData["Statuses"] = resStatus.StatusCode != 200 ? resStatus.Message : resStatus.Data;
+			ViewData["Statuses"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
 			return View(model);
 		}	
 		return RedirectToAction("Index", "Users");

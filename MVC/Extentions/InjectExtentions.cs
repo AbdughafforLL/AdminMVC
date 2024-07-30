@@ -19,7 +19,7 @@ public static class InjectExtentions
 		services.AddScoped<IOrganService, OrganService>();
 		services.AddScoped<IRoleService, RoleService>();
 		services.AddScoped<IAreaService, AreaService>();
-		services.AddScoped<IStatusService, StatusService>();
+		services.AddScoped<IProfessionService, ProfessionService>();
 	}
 	public static void InjectRepositories(this IServiceCollection services)
 	{

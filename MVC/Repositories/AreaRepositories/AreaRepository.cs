@@ -35,7 +35,7 @@ public class AreaRepository : IAreaRepository
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryAreas", parameters);
 		return (res, message);
 	}
-	public async Task<(string, GetAreaDto?)> GetAreaByIdAsync(int areaId)
+	public async Task<(string, DataTable?)> GetAreaByIdAsync(int areaId)
 	{
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",4),
@@ -43,21 +43,15 @@ public class AreaRepository : IAreaRepository
 		};
 
 		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryAreas", parameters);
-
-		var area = new GetAreaDto() { 
-			AreaName = ""
-		};
-		return (res, area);
+		return (res, dataTable);
 	}
-	public async Task<(string, List<GetAreaDto>)> GetAreasAsync()
+	public async Task<(string, DataTable?)> GetAreasAsync()
 	{
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",5)
 		};
 
 		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryAreas", parameters);
-
-		var areas = new List<GetAreaDto>();
-		return (res, areas);
+		return (res, dataTable);
 	}
 }

@@ -34,24 +34,22 @@ public class RoleRepository : IRoleRepository
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryRoles", parameters);
 		return (res, message);
 	}
-	public async Task<(string,GetRoleDto?)> GetRoleByIdAsync(int roleId)
+	public async Task<(string,DataTable?)> GetRoleByIdAsync(int roleId)
 	{
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",4),
 			new SqlParameter("@role_id",roleId),
 		};
-		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryRoles", parameters);
-		var role = new GetRoleDto();
-		return (res, role);
+		var (res, dt) = await SQL.ExecuteQueryDataTableAsync("QueryRoles", parameters);
+		return (res, dt);
 	}
-	public async Task<(string,List<GetRoleDto>)> GetRolesAsync()
+	public async Task<(string,DataTable?)> GetRolesAsync()
 	{
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",5)
 		};
-		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryRoles", parameters);
-		var roles = new List<GetRoleDto>();
-		return (res, roles);
+		var (res, dt) = await SQL.ExecuteQueryDataTableAsync("QueryRoles", parameters);
+		return (res, dt);
 	}
 	public async Task<(bool,string)> AddRoleToUserAsync(int roleId, int userId)
 	{

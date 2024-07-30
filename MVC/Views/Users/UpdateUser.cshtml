@@ -1,4 +1,4 @@
-﻿@using MVC.Entities
+﻿@using MVC.Models.OrganModels
 @model MVC.Models.UserModels.UpdateUserDto
 @{
     Layout = "_AdminLayout";
@@ -59,7 +59,7 @@
 									else
 									{
 										<option label="Вибирайте организация" selected disabled></option>
-										@foreach (Organ organ in (List<Organ>)ViewData["Organs"]!)
+										@foreach (GetOrganDto organ in (List<GetOrganDto>)ViewData["Organs"]!)
 										{
 											<option value="@organ.OrganId">@organ.OrganName</option>
 										}

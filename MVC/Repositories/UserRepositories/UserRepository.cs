@@ -8,6 +8,7 @@ public class UserRepository : IUserRepository
 	public async Task<(bool, string)> CreateUserAsync(CreateUserDto model,string hashPassword)
 	{
 		var parameters = new SqlParameter[] {
+			new SqlParameter("@query_id",1),
 			new SqlParameter("@user_name", model.UserName),
 			new SqlParameter("@ips", model.Ips),
 			new SqlParameter("@inn", model.Inn),
@@ -23,13 +24,14 @@ public class UserRepository : IUserRepository
 			new SqlParameter("@hash_password", hashPassword),
 			new SqlParameter("@created_user_id", model.CreatedUserId)
 		};
-		var (res, message) = await SQL.ExecuteNonQueryAsync("UserInsert", parameters);
+		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryUsers", parameters);
 		
 		return (res,message);
 	}
 	public async Task<(bool, string)> UpdateUserAsync(UpdateUserDto model)
 	{
 		var parameters = new SqlParameter[] {
+			new SqlParameter("@query_id", 2),
 			new SqlParameter("@user_id", model.UserId),
 			new SqlParameter("@user_name", model.UserName),
 			new SqlParameter("@ips", model.Ips),
@@ -45,57 +47,56 @@ public class UserRepository : IUserRepository
 			new SqlParameter("@status_id", model.ProfessionId)
 		};
 
-		var (res,message) = await SQL.ExecuteNonQueryAsync("UserUpdate",parameters);
+		var (res,message) = await SQL.ExecuteNonQueryAsync("QueryUsers",parameters);
 		return (res, message);
 	}
 	public async Task<(bool, string)> DeleteUserAsync(int userId)
 	{
 		var parameters = new SqlParameter[] {
+			new SqlParameter("@qiery_id",3),
 			new SqlParameter("@user_id", userId)
 		};
-		var (res,message) = await SQL.ExecuteNonQueryAsync("UserDelete",parameters);
+		var (res,message) = await SQL.ExecuteNonQueryAsync("QueryUsers",parameters);
 		return (res, message);
 	}
-	public async Task<(string, GetUserByIdDto?)> GetUserByIdAsync(int userId)
+	public async Task<(string, DataSet?)> GetUserByIdAsync(int userId)
 	{
 		var parameters = new SqlParameter[] { 
+			new SqlParameter("@query_id", 4),
 			new SqlParameter("@user_id", userId)
 		};
-		var (message,dataDet) = await SQL.ExecuteQueryDataSetAsync("UserGetById",parameters);
-
-
-		var user = new GetUserByIdDto();
-		return (message, user);
+		var (message,ds) = await SQL.ExecuteQueryDataSetAsync("QueryUsers",parameters);
+		return (message, ds);
 	}
-	public async Task<(string, GetUserByIdDto?)> GetUserByUserNameAsync(string userName)
+	public async Task<(string, DataSet?)> GetUserByUserNameAsync(string userName)
 	{
 		var parameters = new SqlParameter[] { 
-			new SqlParameter("@user_name",userName)	
+			new SqlParameter("@query_id",6),
+			new SqlParameter("@user_name",userName)
 		};
-		var(message,dataSet) = await SQL.ExecuteQueryDataSetAsync("UserGetByUserName", parameters);
-		var user = new GetUserByIdDto();
-		return (message,user);
+		var(message,ds) = await SQL.ExecuteQueryDataSetAsync("QueryUsers", parameters);
+		return (message,ds);
 	}
-	public async Task<(string, List<GetUsersDto>)> GetUsersAsync(UserFilters model)
+	public async Task<(string, DataTable?)> GetUsersAsync(UserFilters model)
 	{
 		var parameters = new SqlParameter[] { 
+			new SqlParameter("@query_id",5),
 			new SqlParameter("@page_number",model.PageNumber),
 			new SqlParameter("@page_size",model.PageSize),
-			new SqlParameter("@phone_number",model.PhoneNumber),
-			new SqlParameter("@inn",model.Inn),
-			new SqlParameter("@name",model.Name),
+			new SqlParameter("@phone_number_f",$"%{model.PhoneNumber}%"),
+			new SqlParameter("@inn_f",$"%{model.Inn}%"),
+			new SqlParameter("@name_f",$"%{model.Name}%"),
 		};
-		var (message, dataSet) = await SQL.ExecuteQueryDataSetAsync("UsersGet",parameters);
-		var user = new List<GetUsersDto>();
-		return (message,user);
+		var (message, dt) = await SQL.ExecuteQueryDataTableAsync("QueryUsers",parameters);
+		return (message,dt);
 	}
-	public async Task<(string, List<int>)> GetRolesByUserIdAsync(int userId)
+	public async Task<(string, DataTable?)> GetRolesByUserIdAsync(int userId)
 	{
 		var parameters = new SqlParameter[] {
+			new SqlParameter("@query_id",7),
 			new SqlParameter("@user_id",userId)
 		};
-		var (message, dataTable) = await SQL.ExecuteQueryDataTableAsync("UserGetRolesById",parameters);
-		var roles = new List<int>();
-		return (message, roles);
+		var (message, dt) = await SQL.ExecuteQueryDataTableAsync("QueryUsers",parameters);
+		return (message, dt);
 	}
 }

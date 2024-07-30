@@ -1,4 +1,5 @@
 ﻿using MVC.Filters;
+using MVC.Helpers;
 using MVC.Models;
 using MVC.Models.UserModels;
 using MVC.Repositories.UserRepositories;
@@ -26,26 +27,36 @@ public class UserService(IUserRepository userRepository,IMapper mapper) : IUserS
 	}
 	public async Task<Response<GetUserByIdDto>> GetUserByIdAsync(int userId)
 	{
-		var (message, user) = await userRepository.GetUserByIdAsync(userId);
-		if (user is null) return new Response<GetUserByIdDto>(HttpStatusCode.InternalServerError, message);
+		var (message, ds) = await userRepository.GetUserByIdAsync(userId);
+		if (ds is null) return new Response<GetUserByIdDto>(HttpStatusCode.InternalServerError, message);
+		var user = new GetUserByIdDto();
+		foreach (var dr in ds.Tables[0].Rows)
+			user = mapper.Map<GetUserByIdDto>(dr);
 		return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
 	}
 	public async Task<Response<GetUserByIdDto>> GetUserByUserNameAsync(string userName)
 	{
-		var (message, user) = await userRepository.GetUserByUserNameAsync(userName);
-		if (user != null) return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
-		return new Response<GetUserByIdDto>(HttpStatusCode.InternalServerError, message);
+		var (message, ds) = await userRepository.GetUserByUserNameAsync(userName);
+		if (ds is null) return new Response<GetUserByIdDto>(HttpStatusCode.BadRequest, message);
+		var user = new GetUserByIdDto();
+		foreach (var dr in ds.Tables[0].Rows)
+			user = mapper.Map<GetUserByIdDto>(dr);
+		return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
 	}
 	public async Task<Response<List<GetUsersDto>>> GetUsersAsync(UserFilters model)
 	{
-		var (message, users) = await userRepository.GetUsersAsync(model);
-		if (users.Count != 0) return new Response<List<GetUsersDto>>(mapper.Map<List<GetUsersDto>>(users));
-		return new Response<List<GetUsersDto>>(HttpStatusCode.InternalServerError, message = message == "" ? "добавте ползователь" : message);
+		var (message, dt) = await userRepository.GetUsersAsync(model);
+		if (dt is null) return new Response<List<GetUsersDto>>(HttpStatusCode.InternalServerError, message = message == "" ? "добавте ползователь" : message);
+		var users = MapHelper.MapDataTableToList<GetUsersDto>(dt, mapper);
+		return new Response<List<GetUsersDto>>(users);
 	}
 	public async Task<Response<List<int>>> GetRolesByUserIdAsync(int user_id)
 	{
-		var (message,roles) = await userRepository.GetRolesByUserIdAsync(user_id);
-		if (roles.Count < 1) return new Response<List<int>>(HttpStatusCode.InternalServerError,message = message == "" ? "not found" : message);
-		return new Response<List<int>>(roles);
+		var (message,dt) = await userRepository.GetRolesByUserIdAsync(user_id);
+		if (dt is null) return new Response<List<int>>(HttpStatusCode.InternalServerError,message = message == "" ? "not found" : message);
+		var roles = new List<int>();
+        foreach (var dr in dt.Rows)
+			roles.Add((int)dr);
+        return new Response<List<int>>(roles);
 	}
 }

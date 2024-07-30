@@ -1,29 +1,30 @@
 ﻿using MVC.Models;
 using MVC.Models.AccountModels;
-using MVC.Repositories.UserRepositories;
+using MVC.Services.UserServices;
+using MVC.Utils;
 namespace MVC.Services.AccountServices;
 
-public class AccountService(IUserRepository userRepository,IMapper mapper) : IAccountService
+public class AccountService(IUserService service) : IAccountService
 {
 	public async Task<Response<GetProfileDto>> GetProfile(int userId)
 	{
-		var (message,user) = await userRepository.GetUserByIdAsync(userId);
-		if (user is null) return new Response<GetProfileDto>(HttpStatusCode.BadRequest,message);
-		var mappedUser = mapper.Map<GetProfileDto>(user);
-		return new Response<GetProfileDto>(mappedUser);
+		var res = await service.GetUserByIdAsync(userId);
+		if (res.StatusCode != 200) return new Response<GetProfileDto>(HttpStatusCode.BadRequest,res.Message);
+		var profile = new GetProfileDto();
+		return new Response<GetProfileDto>(profile);
 	}
 	public async Task<Response<List<Claim>>> Login(LoginModel model)
 	{
-		var (message, user) = await userRepository.GetUserByUserNameAsync(model.UserName);
-		if (user is null) return new Response<List<Claim>>(HttpStatusCode.BadRequest, message);
+		var res = await service.GetUserByUserNameAsync(model.UserName);
+		if (res.StatusCode != 200) return new Response<List<Claim>>(HttpStatusCode.BadRequest, res.Message);
 
-		if (!BCrypt.Net.BCrypt.Verify(model.Password, user!.HashPassword))
+		if (!BCrypt.Net.BCrypt.Verify(model.Password, res.Data.HashPassword))
 			return new Response<List<Claim>>(HttpStatusCode.BadRequest, "password incorrect");
 
 		var claims = new List<Claim>()
 			{
-				new Claim(ClaimTypes.Name, user.UserName),
-				new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString())
+				new Claim(ClaimTypes.Name, res.Data.UserName),
+				new Claim(ClaimTypes.NameIdentifier,res.Data.UserId.ToString())
 			};
 		return new Response<List<Claim>>(claims);
 	}

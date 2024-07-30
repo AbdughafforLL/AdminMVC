@@ -64,6 +64,7 @@ internal static class SQL
 				using (var command = new SqlCommand(query, connection))
 				using (var adapter = new SqlDataAdapter(command))
 				{
+					command.CommandType = CommandType.StoredProcedure;
 					if (parameters != null)
 						command.Parameters.AddRange(parameters);
 
