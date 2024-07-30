@@ -7,7 +7,6 @@ public static class LoggerExtentions
 			.ReadFrom.Configuration(config)
 			.Enrich.FromLogContext()
 			.CreateLogger();
-
 		logging.ClearProviders();
 		logging.AddSerilog(logger);
 	}

@@ -4,7 +4,7 @@ using MVC.Models.StatusModels;
 using MVC.Repositories.StatusRepositories;
 
 namespace MVC.Services.StatusServices;
-public class StatusService(IStatusRepository statusRepository,IMapper mapper) : IStatusService
+public class StatusService(IProfessionRepository statusRepository,IMapper mapper) : IStatusService
 {
 	public async Task<Response<bool>> CreateStatusAsync(CreateStatusDto model)
 	{
@@ -13,7 +13,7 @@ public class StatusService(IStatusRepository statusRepository,IMapper mapper) : 
 		if (res) return new Response<bool>(true);
 		return new Response<bool>(HttpStatusCode.InternalServerError, message);
 	}
-	public async Task<Response<bool>> UpdateStatusAsync(UpdateStatusDto model)
+	public async Task<Response<bool>> UpdateStatusAsync(UpdateProfessionDto model)
 	{
 		var status = mapper.Map<Status>(model);
 		var (res, message) = await statusRepository.UpdateStatusAsync(status);

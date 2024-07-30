@@ -27,6 +27,6 @@ public static class InjectExtentions
 		services.AddScoped<IRoleRepository, RoleRepository>();
 		services.AddScoped<IOrganRepository, OrganRepository>();
 		services.AddScoped<IAreaRepository, AreaRepository>();
-		services.AddScoped<IStatusRepository, StatusRepository>();
+		services.AddScoped<IProfessionRepository, ProfessionRepository>();
 	}
 }

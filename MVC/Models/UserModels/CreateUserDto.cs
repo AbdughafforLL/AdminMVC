@@ -2,8 +2,8 @@
 
 public class CreateUserDto : BaseUserDto
 {
-	[Required(ErrorMessage = "Обязательно выберите status")]
-	public int StatusId { get; set; }
+	[Required(ErrorMessage = "Обязательно выберите профессии")]
+	public int ProfessionId { get; set; }
 	[Required(ErrorMessage = "Обязательно выберите area")]
 	public int AreaId { get; set; }
 	public int CreatedUserId { get; set; }

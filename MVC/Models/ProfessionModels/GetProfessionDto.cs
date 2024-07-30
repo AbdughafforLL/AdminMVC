@@ -1,7 +1,7 @@
 ﻿namespace MVC.Models.StatusModels;
-public class GetStatusDto : BaseStatusDto
+public class GetProfessionDto : BaseProfessionDto
 {
-    public int StatusId { get; set; }
+    public int ProfessionId { get; set; }
     public string CreatedAt { get; set; } = null!;
 	public string UpdatedAt { get; set; } = null!;
 }

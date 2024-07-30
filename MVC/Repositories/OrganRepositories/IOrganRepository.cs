@@ -1,10 +1,10 @@
-﻿using MVC.Entities;
+﻿using MVC.Models.OrganModels;
 namespace MVC.Repositories.OrganRepositories;
 public interface IOrganRepository
 {
-	Task<(bool, string)> CreateOrganAsync(Organ model);
-	Task<(bool, string)> UpdateOrganAsync(Organ model);
+	Task<(bool, string)> CreateOrganAsync(CreateOrganDto model);
+	Task<(bool, string)> UpdateOrganAsync(UpdateOrganDto model);
 	Task<(bool, string)> DeleteOrganAsync(int organId);
-	Task<(string,Organ?)> GetOrganByIdAsync(int organId);
-	Task<(string,List<Organ>)> GetOrgansAsync();
+	Task<(string,GetOrganDto?)> GetOrganByIdAsync(int organId);
+	Task<(string,List<GetOrganDto>)> GetOrgansAsync();
 }

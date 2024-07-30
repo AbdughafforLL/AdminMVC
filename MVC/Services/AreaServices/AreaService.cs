@@ -8,15 +8,13 @@ public class AreaService(IAreaRepository areaRepository,IMapper mapper) : IAreaS
 {
 	public async Task<Response<bool>> CreateAreaAsync(CreateAreaDto model)
 	{
-		var area = mapper.Map<Area>(model);
-		var (res, message) = await areaRepository.CreateAreaAsync(area);
+		var (res, message) = await areaRepository.CreateAreaAsync(model);
 		if (res) return new Response<bool>(res);
 		return new Response<bool>(HttpStatusCode.InternalServerError,message);
     }
 	public async Task<Response<bool>> UpdateAreaAsync(UpdateAreaDto model)
 	{
-		var area = mapper.Map<Area>(model);
-		var (res, message) = await areaRepository.UpdateAreaAsync(area);
+		var (res, message) = await areaRepository.UpdateAreaAsync(model);
 		if (res) return new Response<bool>(res);
 		return new Response<bool>(HttpStatusCode.InternalServerError, message);
 	}

@@ -1,68 +1,77 @@
 ﻿namespace MVC.Utils;
-public static class SQL
+internal static class SQL
 {
 	private static async Task<SqlConnection> GetOpenConnectionAsync()
 	{
-		var conString = new ConfigurationManager().GetConnectionString("DefaultConnection");
-		var connection = new SqlConnection(conString);
+		var builder = new ConfigurationBuilder().AddJsonFile("appSettings.json", false, false).Build();
+		var connection = new SqlConnection(builder.GetConnectionString("DefaultConnection"));
 		await connection.OpenAsync();
 		return connection;
 	}
-	public static async Task<(string, int)> ExecuteNonQueryAsync(string query, params SqlParameter[] parameters)
+	internal static async Task<(bool,string)> ExecuteNonQueryAsync(string query, params SqlParameter[] parameters)
 	{
 		try
 		{
-			using (var connection = await GetOpenConnectionAsync())
-			using (var command = new SqlCommand(query, connection))
+			return await Task.Run(async() =>
 			{
-				command.CommandType = CommandType.StoredProcedure;
-				if (parameters != null)
-					command.Parameters.AddRange(parameters);
-				return ("", await command.ExecuteNonQueryAsync());
-			}
+				using (var connection = await GetOpenConnectionAsync())
+				using (var command = new SqlCommand(query, connection))
+				{
+					command.CommandType = CommandType.StoredProcedure;
+					if (parameters != null)
+						command.Parameters.AddRange(parameters);
+					return (true, "");
+				}
+			});
 		}
 		catch (Exception ex)
 		{
-			return (ex.Message, 0);
+			return (false,ex.Message);
 		}
 	}
-	public static async Task<(string,DataTable?)> ExecuteQueryDataTableAsync(string query,params SqlParameter[] parameters)
+	internal static async Task<(string,DataTable?)> ExecuteQueryDataTableAsync(string query,params SqlParameter[] parameters)
 	{
 		try
 		{
-			using (var connection = await GetOpenConnectionAsync())
-			using (var command = new SqlCommand(query, connection))
-			using (var adapter = new SqlDataAdapter(command))
+			return await Task.Run(async () =>
 			{
-				command.CommandType = CommandType.StoredProcedure;
-				if (parameters != null)
-					command.Parameters.AddRange(parameters);
+				using (var connection = await GetOpenConnectionAsync())
+				using (var command = new SqlCommand(query, connection))
+				using (var adapter = new SqlDataAdapter(command))
+				{
+					command.CommandType = CommandType.StoredProcedure;
+					if (parameters != null)
+						command.Parameters.AddRange(parameters);
 
-				var dataTable = new DataTable();
-				adapter.Fill(dataTable);
-				return ("",dataTable);
-			}
+					var dataTable = new DataTable();
+					adapter.Fill(dataTable);
+					return ("", dataTable);
+				}
+			});
 		}
 		catch (Exception ex)
 		{
 			return (ex.Message, null);
 		}
 	}
-	public static async Task<(string,DataSet?)> ExecuteQueryDataSetAsync(string query, params SqlParameter[] parameters)
+	internal static async Task<(string,DataSet?)> ExecuteQueryDataSetAsync(string query, params SqlParameter[] parameters)
 	{
 		try
 		{
-			using (var connection = await GetOpenConnectionAsync())
-			using (var command = new SqlCommand(query, connection))
-			using (var adapter = new SqlDataAdapter(command))
+			return await Task.Run(async() =>
 			{
-				if (parameters != null)
-					command.Parameters.AddRange(parameters);
+				using (var connection = await GetOpenConnectionAsync())
+				using (var command = new SqlCommand(query, connection))
+				using (var adapter = new SqlDataAdapter(command))
+				{
+					if (parameters != null)
+						command.Parameters.AddRange(parameters);
 
-				var dataSet = new DataSet();
-				adapter.Fill(dataSet);
-				return ("", dataSet);
-			}
+					var dataSet = new DataSet();
+					adapter.Fill(dataSet);
+					return ("", dataSet);
+				}
+			});
 		}
 		catch (Exception ex)
 		{

@@ -1,11 +1,11 @@
-﻿using MVC.Entities;
+﻿using MVC.Models.AreaModels;
 
 namespace MVC.Repositories.AreaRepositories;
 public interface IAreaRepository
 {
-	Task<(bool, string)> CreateAreaAsync(Area model);
-	Task<(bool, string)> UpdateAreaAsync(Area model);
+	Task<(bool, string)> CreateAreaAsync(CreateAreaDto model);
+	Task<(bool, string)> UpdateAreaAsync(UpdateAreaDto model);
 	Task<(bool, string)> DeleteAreaAsync(int areaId);
-	Task<(string, Area?)> GetAreaByIdAsync(int areaId);
-	Task<(string, List<Area>)> GetAreasAsync();
+	Task<(string, GetAreaDto?)> GetAreaByIdAsync(int areaId);
+	Task<(string, List<GetAreaDto>)> GetAreasAsync();
 }

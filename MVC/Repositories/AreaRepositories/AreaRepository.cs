@@ -1,154 +1,63 @@
-﻿using MVC.Entities;
-using MVC.Models;
+﻿using MVC.Models.AreaModels;
+using MVC.Utils;
 
 namespace MVC.Repositories.AreaRepositories;
-public class AreaRepository(IConfiguration configuration) : IAreaRepository
+public class AreaRepository : IAreaRepository
 {
-	private readonly SqlAdoModel _ado = new()
+	public async Task<(bool, string)> CreateAreaAsync(CreateAreaDto model)
 	{
-		ConString = configuration.GetConnectionString("DefaultConnection")!
-	};
-	public async Task<(bool, string)> CreateAreaAsync(Area model)
-	{
-		_ado.SqlQuery = "insert into Areas(area_name)Values(@area_name);";
-		try
-		{
-			return await Task.Run(() =>
-			{
-				using (_ado.Connection = new SqlConnection(_ado.ConString))
-				{
-					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
-					_ado.Command.CommandType = CommandType.Text;
-					_ado.Command.Parameters.AddWithValue("@area_name", model.AreaName);
-					_ado.Connection.Open();
-					int i = _ado.Command.ExecuteNonQuery();
-					_ado.Connection.Close();
-					return (Convert.ToBoolean(i), "");
-				}
-			});
-		}
-		catch (Exception ex)
-		{
-			return (false, ex.Message);
-		}
+		var parameters = new SqlParameter[] {
+			new SqlParameter("@query_id",1),
+			new SqlParameter("@area_name",model.AreaName)
+		};
+		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryAreas",parameters);
+		
+		return (res, message);
 	}
-	public async Task<(bool, string)> UpdateAreaAsync(Area model)
+	public async Task<(bool, string)> UpdateAreaAsync(UpdateAreaDto model)
 	{
-		_ado.SqlQuery = "update Areas set area_name = @area_name,updated_at = GETDATE() where area_id = @area_id;";
-		try
-		{
-			return await Task.Run(() =>
-			{
-				using (_ado.Connection = new SqlConnection(_ado.ConString))
-				{
-					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
-					_ado.Command.CommandType = CommandType.Text;
-					_ado.Command.Parameters.AddWithValue("@area_id", model.AreaId);
-					_ado.Command.Parameters.AddWithValue("@area_name", model.AreaName);
-					_ado.Connection.Open();
-					int i = _ado.Command.ExecuteNonQuery();
-					_ado.Connection.Close();
-					return (Convert.ToBoolean(i), "");
-				}
-			});
-		}
-		catch (Exception ex)
-		{
-			return (false, ex.Message);
-		}
+		var parameters = new SqlParameter[] {
+			new SqlParameter("@query_id",2),
+			new SqlParameter("@area_id",model.AreaId),
+			new SqlParameter("@area_name",model.AreaName),
+		};
+
+		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryAreas",parameters);
+		return (res, message);
 	}
 	public async Task<(bool, string)> DeleteAreaAsync(int areaId)
 	{
-		_ado.SqlQuery = "delete from Areas where area_id = @area_id;";
-		try
-		{
-			return await Task.Run(() =>
-			{
-				using (_ado.Connection = new SqlConnection(_ado.ConString))
-				{
-					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
-					_ado.Command.CommandType = CommandType.Text;
-					_ado.Command.Parameters.AddWithValue("@area_id", areaId);
-					_ado.Connection.Open();
-					int i = _ado.Command.ExecuteNonQuery();
-					_ado.Connection.Close();
-					return (Convert.ToBoolean(i), "");
-				}
-			});
-		}
-		catch (Exception ex)
-		{
-			return (false, ex.Message);
-		}
+		var parameters = new SqlParameter[] {
+			new SqlParameter("@query_id",3),
+			new SqlParameter("@area_id",areaId)
+		};
+
+		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryAreas", parameters);
+		return (res, message);
 	}
-	public async Task<(string, Area?)> GetAreaByIdAsync(int areaId)
+	public async Task<(string, GetAreaDto?)> GetAreaByIdAsync(int areaId)
 	{
-		Area area = null!;
-		_ado.SqlQuery = "select * from Areas where area_id = @area_id;";
-		try
-		{
-			return await Task.Run(() =>
-			{
-				using (_ado.Connection = new SqlConnection(_ado.ConString))
-				{
-					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
-					_ado.Command.CommandType = CommandType.Text;
-					_ado.Command.Parameters.AddWithValue("@area_id", areaId);
-					_ado.Connection.Open();
-					_ado.DataReader = _ado.Command.ExecuteReader();
-					while (_ado.DataReader.Read())
-					{
-						area = new Area()
-						{
-							AreaId = (int)_ado.DataReader["area_id"],
-							AreaName = (string)_ado.DataReader["area_name"],
-							CreatedAt = (string)_ado.DataReader["created_at"],
-							UpdatedAt = (string)_ado.DataReader["updated_at"]
-						};
-					}
-					_ado.Connection.Close();
-				}
-				return ("", area);
-			});
-		}
-		catch (Exception ex)
-		{
-			return (ex.Message, area);
-		}
+		var parameters = new SqlParameter[] {
+			new SqlParameter("@query_id",4),
+			new SqlParameter("@area_id",areaId)
+		};
+
+		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryAreas", parameters);
+
+		var area = new GetAreaDto() { 
+			AreaName = ""
+		};
+		return (res, area);
 	}
-	public async Task<(string, List<Area>)> GetAreasAsync()
+	public async Task<(string, List<GetAreaDto>)> GetAreasAsync()
 	{
-		List<Area> areas = new();
-		_ado.SqlQuery = "select * from Areas;";
-		try
-		{
-			return await Task.Run(() =>
-			{
-				using (_ado.Connection = new SqlConnection(_ado.ConString))
-				{
-					_ado.Command = new SqlCommand(_ado.SqlQuery, _ado.Connection);
-					_ado.Command.CommandType = CommandType.Text;
-					_ado.Connection.Open();
-					_ado.DataReader = _ado.Command.ExecuteReader();
-					while (_ado.DataReader.Read())
-					{
-						Area area = new()
-						{
-							AreaId = (int)_ado.DataReader["area_id"],
-							AreaName = (string)_ado.DataReader["area_name"],
-							CreatedAt = (string)_ado.DataReader["created_at"],
-							UpdatedAt = (string)_ado.DataReader["updated_at"]
-						};
-						areas.Add(area);
-					}
-					_ado.Connection.Close();
-				}
-				return ("", areas);
-			});
-		}
-		catch (Exception ex)
-		{
-			return (ex.Message, areas);
-		}
+		var parameters = new SqlParameter[] {
+			new SqlParameter("@query_id",5)
+		};
+
+		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryAreas", parameters);
+
+		var areas = new List<GetAreaDto>();
+		return (res, areas);
 	}
 }

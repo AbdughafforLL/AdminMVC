@@ -1,5 +1,4 @@
-﻿using MVC.Entities;
-using MVC.Filters;
+﻿using MVC.Filters;
 using MVC.Models;
 using MVC.Models.UserModels;
 using MVC.Repositories.UserRepositories;
@@ -9,7 +8,7 @@ public class UserService(IUserRepository userRepository,IMapper mapper) : IUserS
 {
 	public async Task<Response<bool>> CreateUserAsync(CreateUserDto model)
 	{
-		var (res, message) = await userRepository.CreateUserAsync(mapper.Map<User>(model));
+		var (res, message) = await userRepository.CreateUserAsync(model, "test");
 		if (res) return new Response<bool>(res);
 		return new Response<bool>(HttpStatusCode.InternalServerError, message);
 	}
@@ -21,7 +20,7 @@ public class UserService(IUserRepository userRepository,IMapper mapper) : IUserS
 	}
 	public async Task<Response<bool>> UpdateUserAsync(UpdateUserDto model)
 	{
-		var (res, message) = await userRepository.UpdateUserAsync(mapper.Map<User>(model));
+		var (res, message) = await userRepository.UpdateUserAsync(model);
 		if (res) return new Response<bool>(res);
 		return new Response<bool>(HttpStatusCode.InternalServerError, message);
 	}
@@ -34,14 +33,14 @@ public class UserService(IUserRepository userRepository,IMapper mapper) : IUserS
 	public async Task<Response<GetUserByIdDto>> GetUserByUserNameAsync(string userName)
 	{
 		var (message, user) = await userRepository.GetUserByUserNameAsync(userName);
-		if (user is not null) return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
+		if (user != null) return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
 		return new Response<GetUserByIdDto>(HttpStatusCode.InternalServerError, message);
 	}
 	public async Task<Response<List<GetUsersDto>>> GetUsersAsync(UserFilters model)
 	{
 		var (message, users) = await userRepository.GetUsersAsync(model);
-		if (users.Count!=0) return new Response<List<GetUsersDto>>(mapper.Map<List<GetUsersDto>>(users));
-		return new Response<List<GetUsersDto>>(HttpStatusCode.InternalServerError, message = message == "" ? "добавте ползователь": message);
+		if (users.Count != 0) return new Response<List<GetUsersDto>>(mapper.Map<List<GetUsersDto>>(users));
+		return new Response<List<GetUsersDto>>(HttpStatusCode.InternalServerError, message = message == "" ? "добавте ползователь" : message);
 	}
 	public async Task<Response<List<int>>> GetRolesByUserIdAsync(int user_id)
 	{
