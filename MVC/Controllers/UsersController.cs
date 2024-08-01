@@ -7,7 +7,7 @@ using MVC.Models.StatusModels;
 using MVC.Models.UserModels;
 using MVC.Services.AreaServices;
 using MVC.Services.OrganServices;
-using MVC.Services.StatusServices;
+using MVC.Services.ProfessionServices;
 using MVC.Services.UserServices;
 namespace MVC.Controllers;
 [Authorize]
@@ -43,7 +43,6 @@ public class UsersController(IUserService service,IOrganService organService,
 			ViewBag.Message = resUser.Message;
 		return RedirectToAction("Index", "Users");
 	}
-
 	private async Task<(Response<List<GetOrganDto>>,Response<List<GetAreaDto>>,Response<List<GetProfessionDto>>)> GetDatas() {
 		var resOrgans = await organService.GetOrgansAsync();
 		var resAreas = await areaService.GetAreasAsync();

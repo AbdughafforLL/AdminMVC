@@ -15,7 +15,6 @@ public class OrganController(IOrganService service,IMapper mapper) : Controller
 		ViewData["Organs"] = res.Data!.Organs;
 		return View(res.Data.Filter);
 	}
-
 	public IActionResult CreateOrgan() => View();
 	[HttpPost]
 	public async Task<IActionResult> CreateOrgan(CreateOrganDto model)

@@ -43,7 +43,7 @@ internal static class SQL
 					if (parameters != null)
 						command.Parameters.AddRange(parameters);
 
-					var dataTable = new DataTable();
+					DataTable dataTable = new();
 					adapter.Fill(dataTable);
 					return ("", dataTable);
 				}
@@ -68,7 +68,7 @@ internal static class SQL
 					if (parameters != null)
 						command.Parameters.AddRange(parameters);
 
-					var dataSet = new DataSet();
+					DataSet dataSet = new();
 					adapter.Fill(dataSet);
 					return ("", dataSet);
 				}

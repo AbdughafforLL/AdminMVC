@@ -4,10 +4,7 @@ namespace MVC.Controllers;
 [Authorize]
 public class AdminController(IAccountService service) : Controller
 { 
-	public IActionResult Index()
-	{
-		return View();
-	}
+	public IActionResult Index() => View();
 	public async Task<IActionResult> Profile()
 	{
 		var user_id = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
@@ -16,7 +13,6 @@ public class AdminController(IAccountService service) : Controller
 			return RedirectToAction("Index");
 		return View(res.Data);
 	}
-
 
 	[AllowAnonymous]
 	public IActionResult Login() => View();

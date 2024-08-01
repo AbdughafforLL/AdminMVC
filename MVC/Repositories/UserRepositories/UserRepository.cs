@@ -25,7 +25,6 @@ public class UserRepository : IUserRepository
 			new SqlParameter("@created_user_id", model.CreatedUserId)
 		};
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryUsers", parameters);
-		
 		return (res,message);
 	}
 	public async Task<(bool, string)> UpdateUserAsync(UpdateUserDto model)
@@ -46,7 +45,6 @@ public class UserRepository : IUserRepository
 			new SqlParameter("@organ_id", model.OrganId),
 			new SqlParameter("@status_id", model.ProfessionId)
 		};
-
 		var (res,message) = await SQL.ExecuteNonQueryAsync("QueryUsers",parameters);
 		return (res, message);
 	}

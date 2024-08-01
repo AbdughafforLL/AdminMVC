@@ -11,7 +11,6 @@ public class AreaRepository : IAreaRepository
 			new SqlParameter("@area_name",model.AreaName)
 		};
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryAreas",parameters);
-		
 		return (res, message);
 	}
 	public async Task<(bool, string)> UpdateAreaAsync(UpdateAreaDto model)
@@ -21,7 +20,6 @@ public class AreaRepository : IAreaRepository
 			new SqlParameter("@area_id",model.AreaId),
 			new SqlParameter("@area_name",model.AreaName),
 		};
-
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryAreas",parameters);
 		return (res, message);
 	}
@@ -31,7 +29,6 @@ public class AreaRepository : IAreaRepository
 			new SqlParameter("@query_id",3),
 			new SqlParameter("@area_id",areaId)
 		};
-
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryAreas", parameters);
 		return (res, message);
 	}
@@ -41,7 +38,6 @@ public class AreaRepository : IAreaRepository
 			new SqlParameter("@query_id",4),
 			new SqlParameter("@area_id",areaId)
 		};
-
 		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryAreas", parameters);
 		return (res, dataTable);
 	}
@@ -50,7 +46,6 @@ public class AreaRepository : IAreaRepository
 		var parameters = new SqlParameter[] {
 			new SqlParameter("@query_id",5)
 		};
-
 		var (res, dataTable) = await SQL.ExecuteQueryDataTableAsync("QueryAreas", parameters);
 		return (res, dataTable);
 	}

@@ -1,7 +1,7 @@
 ﻿using MVC.Models.StatusModels;
 using MVC.Utils;
 
-namespace MVC.Repositories.StatusRepositories;
+namespace MVC.Repositories.ProfessionRepositories;
 public class ProfessionRepository : IProfessionRepository
 {
 	public async Task<(bool, string)> CreateProfessionAsync(CreateProfessionDto model)
@@ -10,7 +10,6 @@ public class ProfessionRepository : IProfessionRepository
 			new SqlParameter("@query_id",1),
 			new SqlParameter("@profession_name",model.ProfessionName)
 		};
-
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryProfessions", parameters);
 		return (res, message);
 	}
@@ -21,7 +20,6 @@ public class ProfessionRepository : IProfessionRepository
 			new SqlParameter("@profession_name",model.ProfessionName),
 			new SqlParameter("@profession_id",model.ProfessionId)
 		};
-
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryProfessions", parameters);
 		return (res, message);
 	}

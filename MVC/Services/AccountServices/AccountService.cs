@@ -17,7 +17,6 @@ public class AccountService(IUserService service) : IAccountService
 	{
 		var res = await service.GetUserByUserNameAsync(model.UserName);
 		if (res.StatusCode != 200) return new Response<List<Claim>>(HttpStatusCode.BadRequest, res.Message!);
-
 		if (!BCrypt.Net.BCrypt.Verify(model.Password, res.Data!.HashPassword))
 			return new Response<List<Claim>>(HttpStatusCode.BadRequest, "password incorrect");
 

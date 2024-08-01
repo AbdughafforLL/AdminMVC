@@ -10,7 +10,6 @@ public class RoleRepository : IRoleRepository
 			new SqlParameter("@query_id",1),
 			new SqlParameter("@role_name",model.RoleName)
 		};
-
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryRoles",parameters);
 		return (res, message);
 	}
@@ -20,7 +19,6 @@ public class RoleRepository : IRoleRepository
 			new SqlParameter("@query_id",2),
 			new SqlParameter("@role_id",model.RoleId),
 			new SqlParameter("@role_name",model.RoleName)
-
 		};
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryRoles", parameters);
 		return (res, message);
@@ -58,7 +56,6 @@ public class RoleRepository : IRoleRepository
 			new SqlParameter("@user_id",userId),
 			new SqlParameter("@role_id",roleId)
 		};
-
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryRoles",parameters);
 		return (res, message);
 	}
@@ -69,7 +66,6 @@ public class RoleRepository : IRoleRepository
 			new SqlParameter("@user_id",userId),
 			new SqlParameter("@role_id",roleId)
 		};
-
 		var (res, message) = await SQL.ExecuteNonQueryAsync("QueryRoles", parameters);
 		return (res, message);
 	}

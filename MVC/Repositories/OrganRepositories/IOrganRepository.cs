@@ -1,5 +1,6 @@
 ﻿using MVC.Filters;
 using MVC.Models.OrganModels;
+
 namespace MVC.Repositories.OrganRepositories;
 public interface IOrganRepository
 {

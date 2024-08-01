@@ -1,9 +1,9 @@
 ﻿using MVC.Helpers;
 using MVC.Models;
 using MVC.Models.StatusModels;
-using MVC.Repositories.StatusRepositories;
+using MVC.Repositories.ProfessionRepositories;
 
-namespace MVC.Services.StatusServices;
+namespace MVC.Services.ProfessionServices;
 public class ProfessionService(IProfessionRepository statusRepository,IMapper mapper) : IProfessionService
 {
 	public async Task<Response<bool>> CreateProfessionAsync(CreateProfessionDto model)

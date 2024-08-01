@@ -1,7 +1,7 @@
 ﻿using MVC.Models;
 using MVC.Models.StatusModels;
 
-namespace MVC.Services.StatusServices;
+namespace MVC.Services.ProfessionServices;
 public interface IProfessionService
 {
 	Task<Response<bool>> CreateProfessionAsync(CreateProfessionDto model);

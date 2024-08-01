@@ -3,6 +3,6 @@
 namespace MVC.Models.OrganModels;
 public class GetOrgansWithFilter
 {
-    public List<GetOrganDto> Organs { get; set; }
-    public OrganFilter Filter{ get; set; }
+    public List<GetOrganDto> Organs { get; set; } = null!;
+    public OrganFilter Filter { get; set; } = null!;
 }

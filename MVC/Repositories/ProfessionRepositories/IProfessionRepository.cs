@@ -1,6 +1,6 @@
 ﻿using MVC.Models.StatusModels;
 
-namespace MVC.Repositories.StatusRepositories;
+namespace MVC.Repositories.ProfessionRepositories;
 public interface IProfessionRepository
 {
 	Task<(bool, string)> CreateProfessionAsync(CreateProfessionDto model);
