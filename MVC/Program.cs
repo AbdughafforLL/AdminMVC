@@ -16,7 +16,7 @@ if (!app.Environment.IsDevelopment())
 	app.UseExceptionHandler("/Home/Error");
 	app.UseHsts();
 }
-//app.UseMiddleware<ReqLogingMiddleware>();
+//app.UseMiddleware<ReqLogMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -24,6 +24,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Home}/{action=Index}/{id?}");
+	pattern: "{controller=Admin}/{action=Index}/{id?}");
 
 app.Run();

@@ -10,6 +10,6 @@ public interface IUserService
 	Task<Response<bool>> UpdateUserAsync(UpdateUserDto model);
 	Task<Response<GetUserByIdDto>> GetUserByIdAsync(int userId);
 	Task<Response<GetUserByIdDto>> GetUserByUserNameAsync(string userName);
-	Task<Response<List<GetUsersDto>>> GetUsersAsync(UserFilters model);
+	Task<Response<GetUserWithFlters>> GetUsersAsync(UserFilters model);
 	Task<Response<List<int>>> GetRolesByUserIdAsync(int user_id);
 }

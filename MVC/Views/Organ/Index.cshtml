@@ -1,4 +1,5 @@
-﻿@model List<MVC.Models.OrganModels.GetOrganDto>
+﻿@using MVC.Models.OrganModels
+@model MVC.Filters.OrganFilter
 
 @{
     Layout = "_AdminLayout";
@@ -63,30 +64,32 @@
 											<table class="table table-bordered text-nowrap border-bottom dataTable no-footer" id="basic-datatable" role="grid" aria-describedby="basic-datatable_info">
 												<thead>
 													<tr role="row">
-														<th class="wd-20p sorting sorting_asc" tabindex="0" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Name: activate to sort column descending" aria-sort="ascending" style="width: 199.75px;">Organ Id</th>
 														<th class="wd-25p sorting" tabindex="0" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 259.9px;">Organ Name</th>
 														<th class="wd-20p sorting" tabindex="0" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 199.75px;">Created At</th>
 														<th class="wd-15p sorting" tabindex="0" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 139.613px;">Updated At</th>
 														<th class="wd-20p sorting" tabindex="0" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 199.788px;">Action</th></tr>
 												</thead>
 												<tbody>
-													@foreach (var organ in Model)
+													@if (ViewData["Organs"] != null)
 													{
-														<tr class="odd">
-															<td class="sorting_1">@organ.OrganId</td>
-															<td>@organ.OrganName</td>
-															<td>@organ.CreatedAt</td>
-															<td>@organ.UpdatedAt</td>
-															<td class="text-center">
-																<a asp-action="DeleteOrgan" asp-route-organId="@organ.OrganId" class="remove-list tx-16 remove-button" data-abc="true">
-																	<i class="fe fe-trash text-danger me-2"></i>
-																</a>
-																<a asp-action="UpdateOrgan" asp-route-organId="@organ.OrganId" class="remove-list tx-16 remove-button" data-abc="true">
-																	<i class="fe fe-edit text-info"></i>
-																</a>
-															</td>
-														</tr>
+														@foreach (var organ in (List<GetOrganDto>)ViewData["Organs"]!)
+														{
+															<tr class="odd">
+																<td>@organ.OrganName</td>
+																<td>@organ.CreatedAt</td>
+																<td>@organ.UpdatedAt</td>
+																<td class="text-center">
+																	<a asp-action="DeleteOrgan" asp-route-organId="@organ.OrganId" class="remove-list tx-16 remove-button" data-abc="true">
+																		<i class="fe fe-trash text-danger me-2"></i>
+																	</a>
+																	<a asp-action="UpdateOrgan" asp-route-organId="@organ.OrganId" class="remove-list tx-16 remove-button" data-abc="true">
+																		<i class="fe fe-edit text-info"></i>
+																	</a>
+																</td>
+															</tr>
+														}
 													}
+													
 												</tbody>
 											</table>
 										</div>

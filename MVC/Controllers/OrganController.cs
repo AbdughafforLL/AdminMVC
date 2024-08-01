@@ -1,17 +1,19 @@
-﻿using MVC.Models.OrganModels;
+﻿using MVC.Filters;
+using MVC.Models.OrganModels;
 using MVC.Services.OrganServices;
 namespace MVC.Controllers;
 
 [Authorize]
 public class OrganController(IOrganService service,IMapper mapper) : Controller
 {
-	public async Task<IActionResult> Index()
+	public async Task<IActionResult> Index(OrganFilter model)
 	{
-		var res = await service.GetOrgansAsync();
+		var res = await service.GetOrgansWithFilterAsync(model);
 		if (res.StatusCode != 200) {
 			ViewBag.Message = res.Message;
 		}
-		return View(res.Data);
+		ViewData["Organs"] = res.Data!.Organs;
+		return View(res.Data.Filter);
 	}
 
 	public IActionResult CreateOrgan() => View();

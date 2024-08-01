@@ -1,5 +1,9 @@
 ﻿using MVC.Filters;
 using MVC.Helpers;
+using MVC.Models;
+using MVC.Models.AreaModels;
+using MVC.Models.OrganModels;
+using MVC.Models.StatusModels;
 using MVC.Models.UserModels;
 using MVC.Services.AreaServices;
 using MVC.Services.OrganServices;
@@ -18,7 +22,8 @@ public class UsersController(IUserService service,IOrganService organService,
 			ViewBag.Message = res.Message;
 			return View();
 		}
-		return View(res.Data);
+		ViewData["Users"] = res.Data!.Users;
+		return View(res.Data.Filter);
 	}
 	public async Task<IActionResult> DeleteUser(int userId)
 	{
@@ -39,27 +44,29 @@ public class UsersController(IUserService service,IOrganService organService,
 		return RedirectToAction("Index", "Users");
 	}
 
+	private async Task<(Response<List<GetOrganDto>>,Response<List<GetAreaDto>>,Response<List<GetProfessionDto>>)> GetDatas() {
+		var resOrgans = await organService.GetOrgansAsync();
+		var resAreas = await areaService.GetAreasAsync();
+		var resProfessions = await professionService.GetProfessionsAsync();
+		return (resOrgans, resAreas, resProfessions);
+	}
 	public async Task<IActionResult> CreateUser()
 	{
-		var resProfessions = await professionService.GetProfessionsAsync();
-		var resAreas = await areaService.GetAreasAsync();
-		var resOrgans = await organService.GetOrgansAsync();
+		var (resOrgans, resAreas, resProfessions) = await GetDatas();
 		ViewData["Organs"] = resOrgans.StatusCode != 200 ? resOrgans.Message : resOrgans.Data;
 		ViewData["Areas"] = resAreas.StatusCode != 200 ? resAreas.Message : resAreas.Data;
-		ViewData["Statuses"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
+		ViewData["Professions"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
 		return View();
 	}
 	[HttpPost]
 	public async Task<IActionResult> CreateUser(CreateUserDto model)
 	{
-		var resProfessions = await professionService.GetProfessionsAsync();
-		var resAreas = await areaService.GetAreasAsync();
-		var resOrgans = await organService.GetOrgansAsync();
+		var (resOrgans, resAreas, resProfessions) = await GetDatas();
 		if (!ModelState.IsValid)
 		{
 			ViewData["Organs"] = resOrgans.StatusCode != 200 ? resOrgans.Message : resOrgans.Data;
 			ViewData["Areas"] = resAreas.StatusCode != 200 ? resAreas.Message : resAreas.Data;
-			ViewData["Statuses"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
+			ViewData["Professions"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
 			return View(model);
 		}
 		model.CreatedUserId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
@@ -69,13 +76,17 @@ public class UsersController(IUserService service,IOrganService organService,
 			ViewBag.Message = res.Message;
 			ViewData["Organs"] = resOrgans.StatusCode != 200 ? resOrgans.Message : resOrgans.Data;
 			ViewData["Areas"] = resAreas.StatusCode != 200 ? resAreas.Message : resAreas.Data;
-			ViewData["Statuses"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
+			ViewData["Professions"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
 			return View(model);
 		}	
 		return RedirectToAction("Index", "Users");
 	}
 	public async Task<IActionResult> UpdateUser(int userId)
 	{
+		var (resOrgans, resAreas, resProfessions) = await GetDatas();
+		ViewData["Organs"] = resOrgans.StatusCode != 200 ? resOrgans.Message : resOrgans.Data;
+		ViewData["Areas"] = resAreas.StatusCode != 200 ? resAreas.Message : resAreas.Data;
+		ViewData["Professions"] = resProfessions.StatusCode != 200 ? resProfessions.Message : resProfessions.Data;
 		var res = await service.GetUserByIdAsync(userId);
 		return View();
 	}

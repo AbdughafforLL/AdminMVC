@@ -15,9 +15,11 @@ public class UserService(IUserRepository userRepository,IMapper mapper) : IUserS
 	}
 	public async Task<Response<bool>> DeleteUserAsync(int userId)
 	{
-		var (res, message) = await userRepository.DeleteUserAsync(userId);
-		if (res) return new Response<bool>(res);
-		return new Response<bool>(HttpStatusCode.InternalServerError, message);
+		var (message, dt) = await userRepository.DeleteUserAsync(userId);
+		var res = MapHelper.DataTableToInt(dt,"status_code");
+		if (res != 1) return new Response<bool>(HttpStatusCode.InternalServerError, message);
+		return new Response<bool>(true);
+
 	}
 	public async Task<Response<bool>> UpdateUserAsync(UpdateUserDto model)
 	{
@@ -29,9 +31,11 @@ public class UserService(IUserRepository userRepository,IMapper mapper) : IUserS
 	{
 		var (message, ds) = await userRepository.GetUserByIdAsync(userId);
 		if (ds is null) return new Response<GetUserByIdDto>(HttpStatusCode.InternalServerError, message);
-		var user = new GetUserByIdDto();
-		foreach (var dr in ds.Tables[0].Rows)
+		GetUserByIdDto user = new ();
+        foreach (var dr in ds.Tables[0].Rows)
 			user = mapper.Map<GetUserByIdDto>(dr);
+		user.Roles = MapHelper.DataTableToList(ds.Tables[1],"roles");
+		user.Areas = MapHelper.DataTableToList(ds.Tables[2],"areas");
 		return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
 	}
 	public async Task<Response<GetUserByIdDto>> GetUserByUserNameAsync(string userName)
@@ -43,20 +47,23 @@ public class UserService(IUserRepository userRepository,IMapper mapper) : IUserS
 			user = mapper.Map<GetUserByIdDto>(dr);
 		return new Response<GetUserByIdDto>(mapper.Map<GetUserByIdDto>(user));
 	}
-	public async Task<Response<List<GetUsersDto>>> GetUsersAsync(UserFilters model)
+	public async Task<Response<GetUserWithFlters>> GetUsersAsync(UserFilters model)
 	{
-		var (message, dt) = await userRepository.GetUsersAsync(model);
-		if (dt is null) return new Response<List<GetUsersDto>>(HttpStatusCode.InternalServerError, message = message == "" ? "добавте ползователь" : message);
-		var users = MapHelper.MapDataTableToList<GetUsersDto>(dt, mapper);
-		return new Response<List<GetUsersDto>>(users);
+		var (message, ds) = await userRepository.GetUsersAsync(model);
+		if (ds is null) return new Response<GetUserWithFlters>(HttpStatusCode.InternalServerError, string.IsNullOrEmpty(message) ? "добавте ползователь" : message);
+		model.TotalRecords = MapHelper.DataTableToInt(ds.Tables[1],"count");
+		model.PageCount = (int)Math.Ceiling(model.TotalRecords / (double)model.PageSize);
+		var users = new GetUserWithFlters(){
+			Users = MapHelper.MapDataTableToList<GetUsersDto>(ds.Tables[0], mapper),
+			Filter = model
+		};
+		return new Response<GetUserWithFlters>(users);
 	}
 	public async Task<Response<List<int>>> GetRolesByUserIdAsync(int user_id)
 	{
 		var (message,dt) = await userRepository.GetRolesByUserIdAsync(user_id);
-		if (dt is null) return new Response<List<int>>(HttpStatusCode.InternalServerError,message = message == "" ? "not found" : message);
-		var roles = new List<int>();
-        foreach (var dr in dt.Rows)
-			roles.Add((int)dr);
+		if (dt is null) return new Response<List<int>>(HttpStatusCode.InternalServerError, string.IsNullOrEmpty(message) ? "not found" : message);
+		var roles = MapHelper.DataTableToList(dt,"role_id");
         return new Response<List<int>>(roles);
 	}
 }

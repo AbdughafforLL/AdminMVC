@@ -119,14 +119,14 @@
 							<div class="form-group">
 								<label class="tx-medium">Status</label>
 								<select asp-for="ProfessionId" class="form-control select2-no-search">
-									@if (ViewData["Statuses"]!.GetType() == typeof(string))
+									@if (ViewData["Professions"]!.GetType() == typeof(string))
 									{
-										<option label="@ViewData["Statuses"]!.ToString()" selected disabled></option>
+										<option label="@ViewData["Professions"]!.ToString()" selected disabled></option>
 									}
 									else
 									{
 										<option label="Вибирайте статус ползователь" selected disabled></option>
-										@foreach (GetProfessionDto status in (List<GetProfessionDto>)ViewData["Statuses"]!)
+										@foreach (GetProfessionDto status in (List<GetProfessionDto>)ViewData["Professions"]!)
 										{
 											<option value="@status.ProfessionId">@status.ProfessionName</option>
 										}

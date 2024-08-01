@@ -20,8 +20,4 @@
     <_ContentIncludedByDefault Remove="Views\StatusCode\ServerError.cshtml" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
-
 </Project>

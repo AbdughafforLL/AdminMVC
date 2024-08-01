@@ -6,7 +6,6 @@ public class AdminController(IAccountService service) : Controller
 { 
 	public IActionResult Index()
 	{
-		var user_id = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 		return View();
 	}
 	public async Task<IActionResult> Profile()
@@ -17,9 +16,6 @@ public class AdminController(IAccountService service) : Controller
 			return RedirectToAction("Index");
 		return View(res.Data);
 	}
-
-
-
 
 
 	[AllowAnonymous]
@@ -43,7 +39,7 @@ public class AdminController(IAccountService service) : Controller
 		{
 			AllowRefresh = true,
 			IsPersistent = true,
-			ExpiresUtc = DateTime.UtcNow.AddMinutes(10)
+			ExpiresUtc = DateTime.UtcNow.AddHours(1)
 		};
 		await HttpContext.SignInAsync(
 			CookieAuthenticationDefaults.AuthenticationScheme,

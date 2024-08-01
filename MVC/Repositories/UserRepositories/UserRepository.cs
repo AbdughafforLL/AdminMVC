@@ -50,14 +50,14 @@ public class UserRepository : IUserRepository
 		var (res,message) = await SQL.ExecuteNonQueryAsync("QueryUsers",parameters);
 		return (res, message);
 	}
-	public async Task<(bool, string)> DeleteUserAsync(int userId)
+	public async Task<(string, DataTable)> DeleteUserAsync(int userId)
 	{
 		var parameters = new SqlParameter[] {
-			new SqlParameter("@qiery_id",3),
+			new SqlParameter("@query_id",3),
 			new SqlParameter("@user_id", userId)
 		};
-		var (res,message) = await SQL.ExecuteNonQueryAsync("QueryUsers",parameters);
-		return (res, message);
+		var (message,dt) = await SQL.ExecuteQueryDataTableAsync("QueryUsers",parameters);
+		return (message,dt!);
 	}
 	public async Task<(string, DataSet?)> GetUserByIdAsync(int userId)
 	{
@@ -77,18 +77,17 @@ public class UserRepository : IUserRepository
 		var(message,ds) = await SQL.ExecuteQueryDataSetAsync("QueryUsers", parameters);
 		return (message,ds);
 	}
-	public async Task<(string, DataTable?)> GetUsersAsync(UserFilters model)
+	public async Task<(string, DataSet?)> GetUsersAsync(UserFilters model)
 	{
 		var parameters = new SqlParameter[] { 
 			new SqlParameter("@query_id",5),
 			new SqlParameter("@page_number",model.PageNumber),
 			new SqlParameter("@page_size",model.PageSize),
-			new SqlParameter("@phone_number_f",$"%{model.PhoneNumber}%"),
 			new SqlParameter("@inn_f",$"%{model.Inn}%"),
 			new SqlParameter("@name_f",$"%{model.Name}%"),
 		};
-		var (message, dt) = await SQL.ExecuteQueryDataTableAsync("QueryUsers",parameters);
-		return (message,dt);
+		var (message, ds) = await SQL.ExecuteQueryDataSetAsync("QueryUsers",parameters);
+		return (message,ds);
 	}
 	public async Task<(string, DataTable?)> GetRolesByUserIdAsync(int userId)
 	{

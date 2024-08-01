@@ -5,9 +5,9 @@ public interface IUserRepository
 {
 	Task<(bool, string)> CreateUserAsync(CreateUserDto model,string hashPassword);
 	Task<(bool, string)> UpdateUserAsync(UpdateUserDto model);
-	Task<(bool, string)> DeleteUserAsync(int userId);
+	Task<(string, DataTable)> DeleteUserAsync(int userId);
 	Task<(string, DataSet?)> GetUserByUserNameAsync(string userName);
 	Task<(string, DataSet?)> GetUserByIdAsync(int userId);
-	Task<(string, DataTable?)> GetUsersAsync(UserFilters model);
+	Task<(string, DataSet?)> GetUsersAsync(UserFilters model);
 	Task<(string, DataTable?)> GetRolesByUserIdAsync(int userId);
 }
